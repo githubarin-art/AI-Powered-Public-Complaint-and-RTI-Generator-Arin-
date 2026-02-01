@@ -10,6 +10,7 @@ import MainLayout from './layouts/MainLayout/MainLayout';
 import Home from './pages/Home/Home';
 import GuidedMode from './pages/GuidedMode/GuidedMode';
 import AssistedMode from './pages/AssistedMode/AssistedMode';
+import Templates from './pages/Templates/Templates';
 
 import './App.css';
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/guided" element={<GuidedMode />} />
             <Route path="/assisted" element={<AssistedMode />} />
+            <Route path="/templates" element={<Templates />} />
           </Routes>
         </MainLayout>
         <ToastContainer position="bottom-right" />

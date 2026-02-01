@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ClipboardList, Zap, ArrowRight, ShieldCheck, Github, Lock } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { ClipboardList, Zap, ArrowRight, ShieldCheck, Github, Lock, FileText } from 'lucide-react';
 import './Home.css';
 
 const Home = () => {
@@ -13,6 +13,9 @@ const Home = () => {
         <p className="subtitle">
           Empowering citizens to file effective Right to Information applications and public complaints using AI.
         </p>
+        <Link to="/templates" className="templates-quick-link">
+          <FileText size={16} /> Browse Sample Templates
+        </Link>
       </div>
 
       <div className="mode-selection">

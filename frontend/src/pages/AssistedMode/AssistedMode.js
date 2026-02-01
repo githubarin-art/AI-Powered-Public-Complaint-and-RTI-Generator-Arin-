@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Sparkles, FileText, Globe, MessageSquare, RefreshCw } from 'lucide-react';
 import useDebounce from '../../hooks/useDebounce';
@@ -10,14 +11,17 @@ import ConfidenceNotice from '../../components/ConfidenceNotice/ConfidenceNotice
 import './AssistedMode.css';
 
 const AssistedMode = () => {
+  const location = useLocation();
+  const prefillData = location.state || {};
+
   const [formData, setFormData] = useState({
     applicant_name: '',
     applicant_address: '',
     applicant_state: '',
     applicant_phone: '',
     applicant_email: '',
-    issue_description: '',
-    document_type: 'information_request', // default
+    issue_description: prefillData.prefillDescription || '',
+    document_type: prefillData.documentType || 'information_request',
     language: 'english',
     tone: 'neutral'
   });

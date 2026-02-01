@@ -28,6 +28,9 @@ const MainLayout = ({ children }) => {
             <Link to="/assisted" className={`nav-link ${isActive('/assisted')}`}>
                Assisted Mode
             </Link>
+            <Link to="/templates" className={`nav-link ${isActive('/templates')}`}>
+               Templates
+            </Link>
           </nav>
         </div>
       </header>
