@@ -2,6 +2,14 @@
 
 This guide covers deploying the backend to **Render** and the frontend to **Vercel**.
 
+## ⚡ Key Optimizations
+
+This project includes production-ready optimizations:
+
+- **CPU-only PyTorch:** Reduces build size from ~3.5GB to ~150MB by using CPU wheels instead of CUDA
+- **Environment variable parsing:** Supports both JSON arrays and comma-separated values for list configs
+- **Auto-deployment:** Push to `main` triggers automatic redeploy on both platforms
+
 ---
 
 ## 📋 Prerequisites
@@ -49,11 +57,15 @@ In Render Dashboard → Your Service → **Environment**:
 | `ENVIRONMENT` | `production` |
 | `DEBUG` | `false` |
 | `LOG_LEVEL` | `INFO` |
-| `CORS_ORIGINS` | `["https://your-app.vercel.app"]` |
+| `CORS_ORIGINS` | `["https://your-app.vercel.app","http://localhost:3000"]` |
 | `SPACY_MODEL` | `en_core_web_sm` |
 | `ENABLE_DISTILBERT` | `true` |
 | `RATE_LIMIT_ENABLED` | `true` |
 | `OPENAI_API_KEY` | `sk-your-key` (Optional) |
+
+**Note:** `CORS_ORIGINS` accepts:
+- JSON array: `["https://app.vercel.app","http://localhost:3000"]`
+- Comma-separated: `https://app.vercel.app,http://localhost:3000`
 
 ### Step 4: Deploy
 
@@ -62,7 +74,10 @@ Click **Create Web Service**. Render will:
 2. Run `build.sh` (installs dependencies + spaCy model)
 3. Start the uvicorn server
 
-**Note:** First deployment may take 5-10 minutes due to model downloads.
+**Note:** First deployment takes ~3-5 minutes:
+- CPU-only PyTorch: ~150MB download (vs 3.5GB for CUDA version)
+- spaCy model: ~13MB
+- Total build time: 3-5 minutes on free tier
 
 ### Step 5: Get Your Backend URL
 
@@ -168,6 +183,11 @@ Both Render and Vercel support automatic deployments:
 
 ### Backend Issues
 
+**"error parsing value for field CORS_ORIGINS"**
+- Use JSON array format: `["https://app.vercel.app","http://localhost:3000"]`
+- Or comma-separated: `https://app.vercel.app,http://localhost:3000`
+- Don't use mixed quotes or invalid JSON syntax
+
 **"spaCy model not found"**
 - Ensure `build.sh` has execute permissions
 - Check that `python -m spacy download en_core_web_sm` runs in build
@@ -175,10 +195,11 @@ Both Render and Vercel support automatic deployments:
 **"CORS error"**
 - Update `CORS_ORIGINS` in Render with your Vercel URL
 - Include both `https://` and any preview URLs
+- Wildcards like `https://*.vercel.app` are supported
 
 **"Memory exceeded"**
-- Upgrade from Free to Starter plan (512MB → 1GB RAM)
-- DistilBERT + spaCy need ~800MB
+- Should not happen with CPU-only PyTorch (~150MB)
+- If it does, upgrade to Starter plan (512MB → 1GB RAM)
 
 ### Frontend Issues
 
@@ -198,8 +219,8 @@ Both Render and Vercel support automatic deployments:
 ### Render (Backend)
 | Plan | RAM | Price | Notes |
 |------|-----|-------|-------|
-| Free | 512MB | $0/mo | Spins down after 15min inactivity |
-| Starter | 1GB | $7/mo | Always on, recommended |
+| Free | 512MB | $0/mo | **Sufficient** with CPU-only PyTorch, spins down after 15min |
+| Starter | 1GB | $7/mo | Always on, faster cold starts |
 
 ### Vercel (Frontend)
 | Plan | Price | Notes |
