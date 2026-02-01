@@ -1,0 +1,124 @@
+.download-panel-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.download-panel-card .panel-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.download-panel-card .panel-header h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0 0 0.25rem 0;
+}
+
+.download-panel-card .panel-header p {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.download-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1rem;
+  border: 2px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.download-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.download-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.download-btn .btn-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.download-btn span {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+/* PDF Button Style */
+.pdf-btn .btn-icon {
+  background: #fee2e2;
+  color: #ef4444;
+}
+.pdf-btn:hover:not(:disabled) {
+  border-color: #fee2e2;
+  background: #fef2f2;
+}
+
+/* DOCX Button Style */
+.docx-btn .btn-icon {
+  background: #dbeafe;
+  color: #2563eb;
+}
+.docx-btn:hover:not(:disabled) {
+  border-color: #dbeafe;
+  background: #eff6ff;
+}
+
+/* TXT Button Style */
+.txt-btn .btn-icon {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+.txt-btn:hover:not(:disabled) {
+  border-color: #e5e7eb;
+  background: #f9fafb;
+}
+
+@media (max-width: 640px) {
+  .download-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .download-btn {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 1rem;
+  }
+  
+  .download-btn .btn-icon {
+    width: 40px;
+    height: 40px;
+  }
+}

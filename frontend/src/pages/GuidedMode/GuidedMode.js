@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { Check } from 'lucide-react';
 import { generateDraft } from '../../services/draftService';
 import ApplicantForm from '../../components/ApplicantForm/ApplicantForm';
 import DraftPreview from '../../components/DraftPreview/DraftPreview';
@@ -160,27 +161,46 @@ const GuidedMode = () => {
 
   return (
     <div className="container guided-mode">
-       <div className="progress-bar-container">
-          <div className={`progress-step ${step >= 1 ? 'active' : ''}`}>1. Personal Details</div>
-          <div className="line"></div>
-          <div className={`progress-step ${step >= 2 ? 'active' : ''}`}>2. The Issue</div>
-          <div className="line"></div>
-          <div className={`progress-step ${step >= 3 ? 'active' : ''}`}>3. Review</div>
-       </div>
+       <div className="guided-layout">
+         <div className="guided-sidebar">
+           <div className="stepper-container">
+              <div className={`step-item ${step >= 1 ? 'active' : ''} ${step > 1 ? 'completed' : ''}`}>
+                 <div className="step-indicator">
+                    {step > 1 ? <Check size={16} /> : 1}
+                 </div>
+                 <span className="step-label">Personal Details</span>
+              </div>
+              <div className="step-line"></div>
+              <div className={`step-item ${step >= 2 ? 'active' : ''} ${step > 2 ? 'completed' : ''}`}>
+                 <div className="step-indicator">
+                    {step > 2 ? <Check size={16} /> : 2}
+                 </div>
+                 <span className="step-label">The Issue</span>
+              </div>
+              <div className="step-line"></div>
+              <div className={`step-item ${step >= 3 ? 'active' : ''}`}>
+                 <div className="step-indicator">3</div>
+                 <span className="step-label">Review</span>
+              </div>
+           </div>
+         </div>
 
-       {renderStep()}
+         <div className="guided-content">
+           {renderStep()}
 
-       <div className="navigation-buttons mt-4">
-          {step > 1 && (
-             <button className="btn btn-secondary" onClick={prevStep} disabled={loading}>
-                Back
-             </button>
-          )}
-          {step < 3 && (
-             <button className="btn btn-primary" onClick={nextStep}>
-                Next Step
-             </button>
-          )}
+           <div className="navigation-buttons mt-4">
+              {step > 1 && (
+                 <button className="btn btn-secondary" onClick={prevStep} disabled={loading}>
+                    Back
+                 </button>
+              )}
+              {step < 3 && (
+                 <button className="btn btn-primary" onClick={nextStep}>
+                    Next Step
+                 </button>
+              )}
+           </div>
+         </div>
        </div>
     </div>
   );

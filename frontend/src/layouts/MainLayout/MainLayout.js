@@ -1,20 +1,33 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { Scale, Home, ClipboardList, Zap, Heart } from 'lucide-react';
 import './MainLayout.css';
 
 const MainLayout = ({ children }) => {
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path ? 'active' : '';
+
   return (
     <div className="main-layout">
       <header className="app-header">
         <div className="container header-content">
           <Link to="/" className="brand-logo">
-            <span className="logo-icon">🏛️</span>
+            <div className="logo-icon-wrapper">
+               <Scale size={24} color="white" />
+            </div>
             <h1>CivicDraft</h1>
           </Link>
-          <nav>
-            <Link to="/" className="nav-link">Home</Link>
-            <Link to="/guided" className="nav-link">Guided Mode</Link>
-            <Link to="/assisted" className="nav-link">Assisted Mode</Link>
+          <nav className="main-nav">
+            <Link to="/" className={`nav-link ${isActive('/')}`}>
+               <Home size={18} /> Home
+            </Link>
+            <Link to="/guided" className={`nav-link ${isActive('/guided')}`}>
+               <ClipboardList size={18} /> Guided Mode
+            </Link>
+            <Link to="/assisted" className={`nav-link ${isActive('/assisted')}`}>
+               <Zap size={18} /> Assisted Mode
+            </Link>
           </nav>
         </div>
       </header>
@@ -24,15 +37,19 @@ const MainLayout = ({ children }) => {
       </main>
 
       <footer className="app-footer">
-        <div className="container">
-          <p className="disclaimer">
-            <strong>Disclaimer:</strong> This tool utilizes AI to assist in drafting public complaints and RTI applications. 
-            All generated content is advisory and should be reviewed before submission.
-            We do not store your personal data.
-          </p>
-          <p className="copyright">
-            &copy; {new Date().getFullYear()} AI-Powered Public Complaint & RTI Generator
-          </p>
+        <div className="container footer-content">
+          <div className="footer-brand">
+             <h3>CivicDraft</h3>
+             <p>AI-Powered Citizen Empowerment Tool</p>
+          </div>
+          <div className="footer-links">
+             <p className="copyright">
+                &copy; {new Date().getFullYear()} Open Source Project. 
+             </p>
+             <p className="made-with">
+                Made with <Heart size={14} fill="currentColor" /> for India
+             </p>
+          </div>
         </div>
       </footer>
     </div>

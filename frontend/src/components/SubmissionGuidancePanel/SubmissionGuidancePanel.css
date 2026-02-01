@@ -1,32 +1,87 @@
-.submission-guidance {
+.submission-guidance-card {
   margin-top: 2rem;
   padding: 1.5rem;
-  background-color: #f4f7fb;
-  border-radius: 8px;
-  border-left: 4px solid var(--color-secondary);
+  background-color: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
 }
 
-.submission-guidance h3 {
-    margin-top: 0;
-    color: var(--color-secondary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.guidance-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gray-100);
 }
 
-.submission-guidance ol {
-    padding-left: 1.25rem;
-    margin-bottom: 1rem;
+.guidance-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--gray-900);
 }
 
-.submission-guidance li {
-    margin-bottom: 0.5rem;
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.alert-box {
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 0.75rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    color: var(--color-text-primary);
+.step-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
 }
+
+.step-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background-color: var(--primary-50);
+  color: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content strong {
+  display: block;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 0.25rem;
+}
+
+.step-content p {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.timeline-alert {
+  margin-top: 1.5rem;
+  background-color: var(--warning-50);
+  border: 1px solid var(--warning-200);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--warning-800);
+  font-size: 0.9rem;
+}
+
+.timeline-alert svg {
+  flex-shrink: 0;
+  color: var(--warning-600);
+}
+
+.text-blue-500 { color: #3b82f6; }
+.text-amber-500 { color: #f59e0b; }

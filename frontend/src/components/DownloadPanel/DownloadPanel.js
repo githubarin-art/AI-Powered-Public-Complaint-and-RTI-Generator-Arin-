@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { downloadFile, downloadBlob } from '../../utils/fileDownload';
 import { downloadDocument } from '../../services/draftService';
 import { toast } from 'react-toastify';
+import { FileText, Download } from 'lucide-react';
+import './DownloadPanel.css';
 
 const DownloadPanel = ({ draftData }) => {
   const [downloading, setDownloading] = useState(false);
@@ -9,12 +11,10 @@ const DownloadPanel = ({ draftData }) => {
   const handleDownload = async (format) => {
     setDownloading(true);
     try {
-      // If just text file, we can do it client side
       if (format === 'txt') {
         downloadFile(draftData.draft_text, 'draft_application.txt');
         toast.success("Downloaded as Text File");
       } else {
-        // For PDF/DOCX call backend
         const blob = await downloadDocument({
             draft_text: draftData.draft_text,
             applicant_name: draftData.applicant_name,
@@ -34,31 +34,38 @@ const DownloadPanel = ({ draftData }) => {
   };
 
   return (
-    <div className="card download-panel text-center">
-      <h3>Download Options</h3>
-      <p className="mb-4 text-muted">Select a format to save your document</p>
+    <div className="download-panel-card">
+      <div className="panel-header">
+        <h3><Download size={20} /> Download Options</h3>
+        <p>Save your document in your preferred format</p>
+      </div>
       
-      <div className="button-group" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+      <div className="download-grid">
         <button 
-          className="btn btn-primary" 
+          className="download-btn pdf-btn" 
           onClick={() => handleDownload('pdf')}
           disabled={downloading}
         >
-          📄 PDF
+          <div className="btn-icon">PDF</div>
+          <span>Portable Document</span>
         </button>
+
         <button 
-          className="btn btn-primary" 
+          className="download-btn docx-btn" 
           onClick={() => handleDownload('docx')}
           disabled={downloading}
         >
-          📝 Word
+          <div className="btn-icon">DOCX</div>
+          <span>MS Word</span>
         </button>
+
         <button 
-          className="btn btn-secondary" 
+          className="download-btn txt-btn" 
           onClick={() => handleDownload('txt')}
           disabled={downloading}
         >
-          Plain Text
+          <div className="btn-icon"><FileText size={24} /></div>
+          <span>Plain Text</span>
         </button>
       </div>
     </div>

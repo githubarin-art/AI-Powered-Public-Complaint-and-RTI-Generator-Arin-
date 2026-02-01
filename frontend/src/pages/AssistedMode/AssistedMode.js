@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { Sparkles, FileText, Globe, MessageSquare, RefreshCw } from 'lucide-react';
 import useDebounce from '../../hooks/useDebounce';
 import { generateDraft } from '../../services/draftService';
 import ApplicantForm from '../../components/ApplicantForm/ApplicantForm';
@@ -77,21 +78,29 @@ const AssistedMode = () => {
           />
           
           <div className="card mt-4">
-            <h3>Issue Details</h3>
+            <h3 className="issue-heading">Issue Details</h3>
             <div className="input-group">
-              <label className="input-label">Describe your issue or request *</label>
-              <textarea
-                className="form-textarea"
-                rows="6"
-                placeholder="e.g. I applied for a ration card 3 months ago but haven't received it yet..."
-                value={formData.issue_description}
-                onChange={(e) => setFormData({ ...formData, issue_description: e.target.value })}
-              />
+              <label className="input-label big-label">
+                Describe your issue or request <span className="text-error">*</span>
+              </label>
+              <div className="ai-textarea-wrapper">
+                 <Sparkles size={18} className="ai-icon-sparkle" />
+                 <textarea
+                    className="form-textarea ai-input"
+                    rows="8"
+                    placeholder="Describe specific details like incidents, dates, names of officials, and what action you expect. The more context you provide, the better the draft."
+                    value={formData.issue_description}
+                    onChange={(e) => setFormData({ ...formData, issue_description: e.target.value })}
+                 />
+                 <div className="char-count">
+                    {formData.issue_description.length} chars
+                 </div>
+              </div>
             </div>
             
-            <div className="row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-               <div className="input-group">
-                <label className="input-label">Document Type</label>
+            <div className="controls-row">
+               <div className="control-group">
+                <label className="input-label"><FileText size={14} /> Doc Type</label>
                 <select 
                   className="form-select"
                   value={formData.document_type}
@@ -104,8 +113,8 @@ const AssistedMode = () => {
                 </select>
               </div>
 
-               <div className="input-group">
-                <label className="input-label">Language</label>
+               <div className="control-group">
+                <label className="input-label"><Globe size={14} /> Language</label>
                 <select 
                   className="form-select"
                   value={formData.language}
@@ -116,8 +125,8 @@ const AssistedMode = () => {
                 </select>
               </div>
 
-               <div className="input-group">
-                <label className="input-label">Tone</label>
+               <div className="control-group">
+                <label className="input-label"><MessageSquare size={14} /> Tone</label>
                 <select 
                   className="form-select"
                   value={formData.tone}
@@ -131,11 +140,12 @@ const AssistedMode = () => {
             </div>
 
             <button 
-                className="btn btn-primary mt-4" 
+                className={`btn btn-primary pulse-btn mt-4 ${loading ? 'loading' : ''}`} 
                 onClick={handleManualRegenerate}
                 disabled={loading}
             >
-                {loading ? 'Generating...' : 'Regenerate Draft'}
+                {loading ? <RefreshCw className="spin" size={18} /> : <Sparkles size={18} />}
+                {loading ? ' Generating Draft...' : ' Regenerate Draft'}
             </button>
           </div>
         </div>

@@ -10,7 +10,7 @@
   .split-view {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 3rem;
   }
   
   @media (max-width: 900px) {
@@ -20,10 +20,19 @@
     
     .input-panel {
       order: 1;
+      border-right: none;
+      padding-right: 0;
     }
     
     .preview-panel {
       order: 2;
+    }
+  }
+
+  @media (min-width: 901px) {
+    .input-panel {
+        border-right: 1px solid var(--color-border);
+        padding-right: 2rem;
     }
   }
   
@@ -35,6 +44,138 @@
   
   .preview-panel {
     position: sticky;
-    top: 5rem;
+    top: 2rem; /* Adjusted for tighter sticky spacing */
     height: fit-content;
+    background-color: var(--color-bg-subtle);
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-height: calc(100vh - 4rem); /* Prevent it from being taller than viewport */
+    overflow-y: auto; /* Allow internal scrolling if needed */
+  }
+
+  /* Issue Details Enhancements */
+  .issue-heading {
+      font-size: 1.35rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 1rem;
+  }
+  
+  .big-label {
+      font-size: 1.1rem !important;
+      font-weight: 700 !important;
+      margin-bottom: 0.75rem !important;
+      color: var(--color-text-heading);
+  }
+  
+  .ai-textarea-wrapper {
+      position: relative;
+  }
+  
+  .ai-icon-sparkle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      color: var(--color-primary);
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 10;
+  }
+  
+  .ai-input {
+      padding-right: 2.5rem; /* Space for sparkle */
+      background-color: #fafafe !important; /* Extremely light blue tint */
+      min-height: 180px;
+      line-height: 1.6;
+      resize: vertical;
+  }
+  
+  .ai-input:focus {
+     background-color: #fff !important;
+  }
+  
+  .char-count {
+      position: absolute;
+      bottom: 0.75rem;
+      right: 1rem;
+      font-size: 0.75rem;
+      color: var(--color-text-light);
+      background-color: rgba(255,255,255,0.8);
+      padding: 2px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+  }
+  
+  .controls-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+      background-color: var(--color-bg-subtle);
+      padding: 1rem;
+      border-radius: var(--border-radius-md);
+  }
+  
+  .control-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--color-text-light);
+      margin-bottom: 0.4rem;
+  }
+  
+  .form-select {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    background-color: white;
+    font-size: 0.95rem;
+  }
+  
+  /* Button Pulse Animation */
+  .pulse-btn {
+      width: 100%;
+      height: 3rem;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+  }
+  
+  .pulse-btn:not(:disabled)::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+      transform: scale(0);
+      opacity: 0;
+      transition: transform 0.5s, opacity 0.5s;
+  }
+  
+  .pulse-btn:hover::after {
+      transform: scale(2);
+      opacity: 1;
+      animation: pulseEffect 1.5s infinite;
+  }
+  
+  @keyframes pulseEffect {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 98, 254, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(15, 98, 254, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 98, 254, 0); }
+  }
+  
+  .spin {
+      animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+      100% { transform: rotate(360deg); }
   }
