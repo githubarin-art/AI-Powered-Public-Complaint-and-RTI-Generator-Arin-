@@ -3,31 +3,39 @@ To,
 {DEPARTMENT_NAME}
 {DEPARTMENT_ADDRESS}
 
-Subject: Grievance Regarding {ISSUE_CATEGORY}
+Subject: Grievance/Complaint Regarding {ISSUE_CATEGORY}
 
 Respected Sir/Madam,
 
-I, {APPLICANT_NAME}, resident of {APPLICANT_ADDRESS}, wish to bring to your kind attention the following grievance:
+I, {APPLICANT_NAME}, a resident of {APPLICANT_ADDRESS}, respectfully submit this grievance and bring to your kind attention the following matter requiring urgent redressal:
 
-DETAILS OF GRIEVANCE:
+1. NATURE OF GRIEVANCE:
 {GRIEVANCE_DESCRIPTION}
 
-LOCATION/AREA AFFECTED:
+2. LOCATION/AREA AFFECTED:
 {AFFECTED_LOCATION}
 
-DURATION OF PROBLEM:
-{PROBLEM_DURATION}
+3. DURATION OF PROBLEM:
+This issue has been persisting since {START_DATE}, spanning {PROBLEM_DURATION}.
 
-IMPACT:
+4. IMPACT ON PUBLIC/SELF:
 {IMPACT_DESCRIPTION}
 
-I have been facing this issue since {START_DATE} and despite {PREVIOUS_ATTEMPTS}, the matter remains unresolved.
+5. PREVIOUS ATTEMPTS TO RESOLVE (if any):
+{PREVIOUS_ATTEMPTS}
 
-I humbly request you to look into this matter on priority and take appropriate action to resolve the grievance at the earliest.
+6. RELIEF SOUGHT:
+I humbly request your good office to:
+- Investigate the matter thoroughly
+- Take appropriate corrective action
+- Ensure the issue does not recur
+- Provide me with an update on the action taken
 
-I am willing to provide any additional information or documents that may be required to address this issue.
+I am a law-abiding citizen and have full faith in the administration. I trust that you will look into this matter with due seriousness and take necessary action within a reasonable timeframe.
 
-Thanking you,
+I am ready to provide any additional information or documents that may be required to address this grievance. I may be contacted at the address/phone number mentioned below.
+
+Thanking you in anticipation of a favourable response.
 
 Yours faithfully,
 
@@ -37,3 +45,5 @@ Yours faithfully,
 
 Date: {DATE}
 Place: {PLACE}
+
+Note: This grievance may be tracked and followed up. Please acknowledge receipt.

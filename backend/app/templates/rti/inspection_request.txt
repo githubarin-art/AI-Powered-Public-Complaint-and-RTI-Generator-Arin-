@@ -3,23 +3,34 @@ The Public Information Officer,
 {DEPARTMENT_NAME}
 {DEPARTMENT_ADDRESS}
 
-Subject: Request for Inspection of Records under Section 2(j) of RTI Act, 2005
+Subject: Application for Inspection of Records/Works under Section 2(j) of RTI Act, 2005
 
 Respected Sir/Madam,
 
-I, {APPLICANT_NAME}, resident of {APPLICANT_ADDRESS}, hereby request permission to inspect the following records/documents under Section 2(j) of the Right to Information Act, 2005:
+I, {APPLICANT_NAME}, a citizen of India, resident of {APPLICANT_ADDRESS}, hereby submit this application under Section 6(1) read with Section 2(j)(ii) of the Right to Information Act, 2005, seeking permission to inspect the following records/documents/works:
 
-{RECORDS_FOR_INSPECTION}
+RECORDS/WORKS TO BE INSPECTED:
+{INFORMATION_REQUESTED}
 
-Purpose of Inspection: {PURPOSE}
+PURPOSE OF INSPECTION:
+To verify and examine the records/works in public interest and for transparency.
 
-Preferred Date and Time for Inspection: {PREFERRED_DATE}
+PREFERRED SCHEDULE:
+{TIME_PERIOD}
 
-I am an Indian citizen and request the opportunity to inspect the above-mentioned records as provided under the RTI Act.
+I hereby state that:
+1. I am a citizen of India.
+2. The inspection is sought for legitimate purposes under the RTI Act.
+3. I shall abide by the rules and regulations during inspection.
+4. I am willing to pay any applicable inspection charges.
 
-I am enclosing the prescribed fee of Rs. 10/- (Rupees Ten Only) towards the application fee.
+FEE DETAILS:
+- Application Fee: Rs. 10/- (enclosed via {PAYMENT_MODE})
+- Inspection Fee: As prescribed by the State/Central Government
 
-I request you to kindly grant permission for inspection and inform me of the scheduled date and time at your earliest convenience.
+As per Section 2(j)(ii) of the RTI Act, 2005, right to information includes the right to inspect works, documents, and records. I request that permission for inspection be granted within 30 days and I be informed of the scheduled date, time, and venue.
+
+In case any documents need to be excluded from inspection under Section 8 or 9, please provide reasons in writing.
 
 Thanking you,
 
@@ -31,3 +42,5 @@ Yours faithfully,
 
 Date: {DATE}
 Place: {PLACE}
+
+Enclosure: Application fee of Rs. 10/- via {PAYMENT_MODE}

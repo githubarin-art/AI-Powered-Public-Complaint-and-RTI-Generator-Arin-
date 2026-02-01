@@ -1,37 +1,41 @@
 To,
-{HIGHER_AUTHORITY_DESIGNATION}
+{AUTHORITY_DESIGNATION}
 {DEPARTMENT_NAME}
 {DEPARTMENT_ADDRESS}
 
-Subject: Escalation of Unresolved Grievance - Request for Urgent Intervention
+Subject: ESCALATION - Unresolved Grievance Requiring Urgent Intervention
 
 Respected Sir/Madam,
 
-I, {APPLICANT_NAME}, resident of {APPLICANT_ADDRESS}, wish to escalate the following unresolved grievance to your higher office:
+I, {APPLICANT_NAME}, a resident of {APPLICANT_ADDRESS}, am constrained to escalate the following unresolved grievance to your higher office, as my previous attempts have not yielded any satisfactory result.
 
-ORIGINAL COMPLAINT DETAILS:
-- Previous Complaint Number: {PREVIOUS_COMPLAINT_NUMBER}
-- Date of Original Complaint: {ORIGINAL_COMPLAINT_DATE}
-- Authority Approached: {PREVIOUS_AUTHORITY}
+1. ORIGINAL COMPLAINT DETAILS:
+   - Reference/Complaint Number: {REFERENCE_NUMBER}
+   - Date of Original Complaint: {START_DATE}
+   - Authority Previously Approached: {PREVIOUS_AUTHORITY}
 
-SUMMARY OF ISSUE:
-{GRIEVANCE_SUMMARY}
+2. SUMMARY OF GRIEVANCE:
+{GRIEVANCE_DESCRIPTION}
 
-CURRENT STATUS:
-{CURRENT_STATUS}
+3. CURRENT STATUS:
+Despite my complaint dated {START_DATE} to the concerned authority, the issue remains unresolved for {PROBLEM_DURATION}. No satisfactory action has been taken.
 
-REASON FOR ESCALATION:
-Despite my complaint dated {ORIGINAL_COMPLAINT_DATE} to {PREVIOUS_AUTHORITY}, the issue remains unresolved. I have:
+4. EFFORTS MADE SO FAR:
 {PREVIOUS_ATTEMPTS}
 
-I humbly request your urgent intervention in this matter. The continued delay is causing {IMPACT_DESCRIPTION}.
+5. IMPACT OF NON-RESOLUTION:
+{IMPACT_DESCRIPTION}
 
-I kindly request you to:
-1. Look into the matter personally
-2. Direct the concerned officials to take immediate action
-3. Provide me with a timeline for resolution
+6. RELIEF SOUGHT:
+I respectfully but firmly request your immediate intervention to:
+- Direct the concerned officials to resolve this matter on priority
+- Ensure accountability for the delay in addressing the grievance
+- Provide a definite timeline for resolution
+- Acknowledge receipt of this escalation
 
-I am attaching copies of my previous correspondence for your reference.
+I have maintained patience for a considerable period, but the continued inaction has compelled me to approach your higher office. I trust that you will appreciate the gravity of the situation and take appropriate action.
+
+I am prepared to provide any additional information or attend in person if required.
 
 Thanking you,
 
@@ -45,5 +49,5 @@ Date: {DATE}
 Place: {PLACE}
 
 Enclosures:
-1. Copy of original complaint dated {ORIGINAL_COMPLAINT_DATE}
-2. {OTHER_ENCLOSURES}
+1. Copy of original complaint
+2. Any previous correspondence/acknowledgments
