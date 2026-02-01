@@ -109,6 +109,12 @@ class DraftRequest(BaseModel):
         description="Additional fields: location, impact, start_date, previous_attempts, reference_number"
     )
     
+    # LLM Enhancement Options (NEW)
+    enable_llm_enhancement: bool = Field(
+        default=True,
+        description="Enable AI-powered text enhancement (polish, clarify)"
+    )
+    
     class Config:
         json_schema_extra = {
             "example": {
@@ -168,6 +174,11 @@ class DraftResponse(BaseModel):
     
     # Suggestions
     suggestions: List[str] = Field(default_factory=list)
+    
+    # LLM Enhancement Info (NEW)
+    llm_enhanced: bool = Field(default=False, description="Whether LLM enhancement was applied")
+    original_draft: Optional[str] = Field(None, description="Original rule-based draft before LLM enhancement")
+    enhancement_summary: Optional[str] = Field(None, description="Summary of LLM changes")
 
 
 # =============================================================================
@@ -312,13 +323,52 @@ async def generate_draft(request: DraftRequest) -> DraftResponse:
             else:
                 suggestions.append("Keep the acknowledgment/reference number for follow-up")
         
+        # =====================================================================
+        # LLM ENHANCEMENT (Optional - Rules first, then LLM polishes)
+        # =====================================================================
+        llm_enhanced = False
+        original_draft = None
+        enhancement_summary = None
+        final_draft_text = result["draft_text"]
+        
+        if request.enable_llm_enhancement and settings.FEATURE_LLM_ASSIST:
+            try:
+                from app.services.llm import enhance_draft_text, is_llm_available
+                
+                if is_llm_available():
+                    logger.info("Applying LLM enhancement to rule-based draft...")
+                    
+                    # Preserve original for transparency
+                    original_draft = result["draft_text"]
+                    
+                    # Enhance the draft
+                    enhancement = await enhance_draft_text(
+                        draft_text=result["draft_text"],
+                        language=language,
+                        tone=request.tone,
+                        preserve_placeholders=True
+                    )
+                    
+                    if enhancement.was_enhanced:
+                        final_draft_text = enhancement.enhanced_text
+                        llm_enhanced = True
+                        enhancement_summary = enhancement.changes_summary
+                        suggestions.append("✨ AI-enhanced for better clarity (original preserved)")
+                        logger.info(f"LLM enhancement applied: {enhancement.tokens_used} tokens")
+                    else:
+                        logger.info(f"LLM enhancement skipped: {enhancement.changes_summary}")
+                        
+            except Exception as e:
+                logger.warning(f"LLM enhancement failed (using rule-based): {e}")
+                # Continue with rule-based draft - LLM failure is non-critical
+        
         # Build response
         response = DraftResponse(
-            draft_text=result["draft_text"],
+            draft_text=final_draft_text,
             document_type=result["document_type"],
             template_used=result["template_used"],
             language=request.language,
-            word_count=result["word_count"],
+            word_count=len(final_draft_text.split()),
             generated_at=datetime.fromisoformat(result["generated_at"]),
             placeholders=PlaceholderInfo(
                 filled=result["placeholders_filled"],
@@ -326,7 +376,10 @@ async def generate_draft(request: DraftRequest) -> DraftResponse:
             ),
             editable_sections=result["editable_sections"],
             warnings=warnings,
-            suggestions=suggestions
+            suggestions=suggestions,
+            llm_enhanced=llm_enhanced,
+            original_draft=original_draft if llm_enhanced else None,
+            enhancement_summary=enhancement_summary
         )
         
         logger.info(f"Draft generated successfully: {result['word_count']} words")

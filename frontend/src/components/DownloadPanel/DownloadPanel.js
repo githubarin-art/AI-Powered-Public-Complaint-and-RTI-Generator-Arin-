@@ -42,7 +42,7 @@ const DownloadPanel = ({ draftData }) => {
           onClick={() => handleDownload('pdf')}
           disabled={downloading}
         >
-          <div className="btn-icon">PDF</div>
+          <div className="download-btn__icon">PDF</div>
           <span>Portable Document</span>
         </button>
 
@@ -51,7 +51,7 @@ const DownloadPanel = ({ draftData }) => {
           onClick={() => handleDownload('docx')}
           disabled={downloading}
         >
-          <div className="btn-icon">DOCX</div>
+          <div className="download-btn__icon">DOCX</div>
           <span>MS Word</span>
         </button>
 
@@ -60,7 +60,7 @@ const DownloadPanel = ({ draftData }) => {
           onClick={() => handleDownload('txt')}
           disabled={downloading}
         >
-          <div className="btn-icon"><FileText size={24} /></div>
+          <div className="download-btn__icon"><FileText size={24} /></div>
           <span>Plain Text</span>
         </button>
       </div>

@@ -1,114 +1,114 @@
+/* ============================================
+   APPLICANT FORM - Institutional Civic Design
+   ============================================ */
+
 .applicant-form-container {
-    background: var(--color-bg-card);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--box-shadow-card);
-    border: 1px solid var(--color-border);
-    margin-bottom: 2rem;
-    overflow: hidden;
-    font-family: var(--font-family-sans);
-    display: flex;
-    flex-direction: column;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  font-family: var(--font-sans);
 }
 
 .form-tabs {
-    display: flex;
-    border-bottom: 2px solid var(--color-border);
-    background-color: transparent;
-    padding: 0 1rem;
+  display: flex;
+  background-color: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 0.75rem;
 }
 
 .tab-btn {
-    flex: 0 0 auto;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    background: transparent;
-    font-weight: 500;
-    color: var(--color-text-light);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-    margin-bottom: -2px; /* Pull down to overlap border */
-    border-bottom: 2px solid transparent;
+  padding: 0.65rem 0.875rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s;
 }
 
 .tab-btn:hover {
-    color: var(--color-text-heading);
-    background-color: transparent;
+  color: var(--color-text-primary);
 }
 
 .tab-btn.active {
-    color: var(--color-primary);
-    background-color: transparent;
-    border-bottom-color: var(--color-accent);
-    box-shadow: none;
+  color: var(--color-brand-navy);
+  border-bottom-color: var(--color-brand-orange);
+  background-color: transparent;
 }
 
 .form-content {
-    padding: 1.5rem;
-    background-color: white;
+  padding: 1rem;
 }
 
 .tab-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
 }
 
 .fade-in {
-    animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.15s ease-out;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Labels */
 .applicant-form-container label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 0.35rem;
-    display: block;
-    color: var(--color-text-body);
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.3rem;
 }
 
-/* Input Fields - Modern Rounded Box Style */
+/* Input Fields */
 .applicant-form-container input[type="text"],
 .applicant-form-container input[type="email"],
 .applicant-form-container input[type="tel"],
 .applicant-form-container textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    background: #ffffff;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
-    box-shadow: none;
-    transition: all 0.2s ease;
-    color: var(--color-text-body);
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  transition: border-color 0.15s;
+  box-sizing: border-box;
 }
 
 .applicant-form-container input:focus,
 .applicant-form-container textarea:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: var(--box-shadow-focus);
+  outline: none;
+  border-color: var(--color-brand-orange);
+  box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.06);
 }
 
-.applicant-form-container input::placeholder,
-.applicant-form-container textarea::placeholder {
-    color: #94a3b8;
+/* Input Icons Group (if used) */
+.input-with-icon {
+  position: relative;
 }
 
-.info-box {
-    background-color: var(--color-bg-subtle);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
-    padding: 1rem;
-    font-size: 0.85rem;
-    color: var(--color-text-body);
+.input-icon {
+  position: absolute;
+  left: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-tertiary);
+}
+
+.input-with-icon input {
+  padding-left: 2.25rem;
 }

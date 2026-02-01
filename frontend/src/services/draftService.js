@@ -54,7 +54,9 @@ const transformToBackendSchema = (data) => {
     authority: authority,
     language: data.language || 'english',
     tone: data.tone || 'neutral',
-    additional_context: data.additional_context || null
+    additional_context: data.additional_context || null,
+    // LLM Enhancement toggle (defaults to true for better output)
+    enable_llm_enhancement: data.enable_llm_enhancement !== false
   };
 };
 
@@ -72,12 +74,18 @@ const transformResponse = (response) => {
     editable_sections: response.editable_sections,
     warnings: response.warnings || [],
     suggestions: response.suggestions || [],
+    // LLM enhancement info
+    llm_enhanced: response.llm_enhanced || false,
+    original_draft: response.original_draft || null,
+    enhancement_summary: response.enhancement_summary || null,
     // Add confidence object for ConfidenceNotice component
     confidence: {
       level: response.warnings?.length > 0 ? 'medium' : 'high',
       explanation: response.warnings?.length > 0 
         ? 'Some fields may need your attention. Please review highlighted sections.'
-        : 'Draft generated successfully with all required information.'
+        : response.llm_enhanced 
+          ? 'Draft generated and AI-enhanced for clarity.'
+          : 'Draft generated successfully with all required information.'
     }
   };
 };

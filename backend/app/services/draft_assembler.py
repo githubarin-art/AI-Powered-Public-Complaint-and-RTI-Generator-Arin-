@@ -292,11 +292,15 @@ class DraftAssembler:
             "document_type": document_type.value,
             "template_used": self.TEMPLATE_MAP.get(document_type, f"{document_type.value}_template"),
             "language": language,
+            "tone": tone,
             "placeholders_filled": placeholders_filled,
             "placeholders_missing": placeholders_missing,
             "word_count": len(draft_text.split()),
             "editable_sections": editable_sections,
             "generated_at": datetime.now().isoformat(),
+            # Flag indicating this is rule-based output (can be enhanced by LLM)
+            "llm_enhanced": False,
+            "llm_enhancement_available": True,
         }
     
     def get_template_preview(self, document_type: DocumentType, language: str = "english") -> Optional[str]:

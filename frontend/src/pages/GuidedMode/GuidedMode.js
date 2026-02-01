@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Check } from 'lucide-react';
+import { Check, ArrowLeft, ClipboardList, Shield, Scale } from 'lucide-react';
 import { generateDraft } from '../../services/draftService';
 import { getCategories } from '../../services/authorityService';
 import ApplicantForm from '../../components/ApplicantForm/ApplicantForm';
@@ -83,20 +84,27 @@ const GuidedMode = () => {
       case 1:
         return (
           <div className="step-content">
-            <h2>Step 1: Applicant Details</h2>
-            <p className="text-muted mb-4">We need your details to address the application correctly.</p>
-            <ApplicantForm data={formData} onChange={setFormData} />
+            <div className="step-header">
+              <h2>Applicant Details</h2>
+              <p className="text-muted">We need your personal details to file the application officially.</p>
+            </div>
+            <div className="input-card">
+              <ApplicantForm data={formData} onChange={setFormData} />
+            </div>
           </div>
         );
       case 2:
         return (
           <div className="step-content">
-            <h2>Step 2: Request Details</h2>
-            <div className="card">
+            <div className="step-header">
+              <h2>Request Details</h2>
+              <p className="text-muted">Tell us about the issue or information you are seeking.</p>
+            </div>
+            <div className="input-card">
               <div className="input-group">
                 <label className="input-label">What document do you need? *</label>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                    <label className="radio-card">
+                <div className="radio-group">
+                    <label className={`radio-card ${formData.intent === 'info' ? 'selected' : ''}`}>
                         <input 
                             type="radio" 
                             name="intent" 
@@ -106,7 +114,7 @@ const GuidedMode = () => {
                         />
                         <span>Ask for Information (RTI)</span>
                     </label>
-                    <label className="radio-card">
+                    <label className={`radio-card ${formData.intent === 'complaint' ? 'selected' : ''}`}>
                         <input 
                             type="radio" 
                             name="intent" 
@@ -173,22 +181,43 @@ const GuidedMode = () => {
         );
       case 3:
         return (
-           <div className="step-content">
-              <h2>Step 3: Review your Draft</h2>
+           <div className="step-content review-phase">
+              <div className="step-header">
+                <h2>Review Your Document</h2>
+                <p className="text-muted">Review the generated document carefully before downloading.</p>
+              </div>
               {loading ? (
-                <div className="text-center p-5">Creating your document...</div>
+                <div className="loading-state">
+                  <div className="loading-spinner"></div>
+                  <p>Creating your document...</p>
+                </div>
               ) : draft ? (
-                <>
-                   <DraftPreview 
-                     draftText={draft.draft_text} 
-                     onEdit={(text) => setDraft({...draft, draft_text: text})} 
-                   />
-                   <div className="mt-4">
+                <div className="document-review-layout">
+                   {/* Document Review Pane */}
+                   <div className="review-document-container">
+                     <DraftPreview 
+                       draftText={draft.draft_text} 
+                       onEdit={(text) => setDraft({...draft, draft_text: text})}
+                       documentType={formData.document_type}
+                       language={formData.language}
+                       mode="Guided"
+                       isReady={!loading}
+                     />
+                   </div>
+                   
+                   {/* Export Section - Separated */}
+                   <div className="export-section-guided">
+                     <div className="export-header-guided">
+                       <h3>Export Your Document</h3>
+                       <p>Download in your preferred format for submission</p>
+                     </div>
                      <DownloadPanel draftData={{...formData, draft_text: draft.draft_text}} />
                    </div>
-                </>
+                </div>
               ) : (
-                <div className="text-center p-5 text-error">Something went wrong.</div>
+                <div className="error-state">
+                  <p>Something went wrong. Please go back and try again.</p>
+                </div>
               )}
            </div>
         );
@@ -197,40 +226,91 @@ const GuidedMode = () => {
   };
 
   return (
-    <div className="container guided-mode">
+    <div className="guided-mode-page">
+      {/* Page Header */}
+      <div className="guided-page-header">
+        <div className="container">
+          <Link to="/" className="back-link">
+            <ArrowLeft size={16} />
+            <span>Back to Home</span>
+          </Link>
+          
+          <div className="page-header-row">
+            <div className="page-header-content">
+              <div className="page-header-icon">
+                <ClipboardList size={24} />
+              </div>
+              <div className="page-header-text">
+                <h1>Guided Drafting</h1>
+                <p>Step-by-step questionnaire to generate a rule-compliant draft. No AI involved.</p>
+              </div>
+            </div>
+            
+            <div className="page-header-badges">
+              <div className="header-badge">
+                <Scale size={14} />
+                <span>100% Rule-Based</span>
+              </div>
+              <div className="header-badge">
+                <Shield size={14} />
+                <span>No Data Stored</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="guided-mode container">
        <div className="guided-layout">
+         {/* Sidebar Stepper */}
          <div className="guided-sidebar">
+           <h3>Progress</h3>
            <div className="stepper-container">
+              {/* Step 1 */}
               <div className={`step-item ${step >= 1 ? 'active' : ''} ${step > 1 ? 'completed' : ''}`}>
                  <div className="step-indicator">
                     {step > 1 ? <Check size={16} /> : 1}
                  </div>
-                 <span className="step-label">Personal Details</span>
+                 <div className="step-content-wrapper">
+                    <span className="step-label">Personal Details</span>
+                    <span className="step-desc">Your contact info</span>
+                 </div>
               </div>
-              <div className="step-line"></div>
+              
+              {/* Step 2 */}
               <div className={`step-item ${step >= 2 ? 'active' : ''} ${step > 2 ? 'completed' : ''}`}>
                  <div className="step-indicator">
                     {step > 2 ? <Check size={16} /> : 2}
                  </div>
-                 <span className="step-label">The Issue</span>
+                 <div className="step-content-wrapper">
+                    <span className="step-label">The Issue</span>
+                    <span className="step-desc">What do you need?</span>
+                 </div>
               </div>
-              <div className="step-line"></div>
+              
+              {/* Step 3 */}
               <div className={`step-item ${step >= 3 ? 'active' : ''}`}>
                  <div className="step-indicator">3</div>
-                 <span className="step-label">Review</span>
+                 <div className="step-content-wrapper">
+                    <span className="step-label">Review</span>
+                    <span className="step-desc">Download & Print</span>
+                 </div>
               </div>
            </div>
          </div>
 
+         {/* Content Area */}
          <div className="guided-content">
            {renderStep()}
 
-           <div className="navigation-buttons mt-4">
-              {step > 1 && (
+           {/* Navigation Buttons */}
+           <div className="navigation-buttons">
+              {step > 1 ? (
                  <button className="btn btn-secondary" onClick={prevStep} disabled={loading}>
                     Back
                  </button>
-              )}
+              ) : <div></div> /* Spacer */}
+              
               {step < 3 && (
                  <button className="btn btn-primary" onClick={nextStep}>
                     Next Step
@@ -239,6 +319,7 @@ const GuidedMode = () => {
            </div>
          </div>
        </div>
+      </div>
     </div>
   );
 };

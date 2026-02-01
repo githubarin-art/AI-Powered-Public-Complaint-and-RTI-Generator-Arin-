@@ -33,11 +33,11 @@ class Settings(BaseSettings):
     # CORS Configuration
     # ===================
     CORS_ORIGINS: List[str] = Field(
-        default=["http://localhost:3000", "http://127.0.0.1:3000"],
-        description="Allowed CORS origins"
+        default=["http://localhost:3000", "http://127.0.0.1:3000", "https://*.vercel.app"],
+        description="Allowed CORS origins - set via CORS_ORIGINS env var for production"
     )
     CORS_ALLOW_CREDENTIALS: bool = True
-    CORS_ALLOW_METHODS: List[str] = ["GET", "POST", "OPTIONS"]
+    CORS_ALLOW_METHODS: List[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     CORS_ALLOW_HEADERS: List[str] = ["*"]
     
     # ===================
@@ -87,16 +87,28 @@ class Settings(BaseSettings):
     API_KEYS: List[str] = Field(default=[], description="Valid API keys")
     
     # ===================
+    # OpenAI Configuration (LLM Assistant - NOT Authority)
+    # ===================
+    OPENAI_API_KEY: Optional[str] = Field(default=None, description="OpenAI API key for LLM enhancement")
+    OPENAI_MODEL: str = Field(default="gpt-4o-mini", description="OpenAI model to use")
+    OPENAI_MAX_TOKENS: int = Field(default=1500, description="Max tokens for LLM response")
+    OPENAI_TEMPERATURE: float = Field(default=0.3, description="Low temperature for consistent legal language")
+    ENABLE_LLM_ENHANCEMENT: bool = Field(default=True, description="Enable LLM text enhancement")
+    LLM_ENHANCEMENT_MODE: str = Field(default="polish", description="polish, translate, clarify")
+    
+    # ===================
     # Feature Flags
     # ===================
-    FEATURE_HINDI_SUPPORT: bool = Field(default=False, description="Enable Hindi language support")
+    FEATURE_HINDI_SUPPORT: bool = Field(default=True, description="Enable Hindi language support")
     FEATURE_XLSX_EXPORT: bool = Field(default=True, description="Enable XLSX export")
     FEATURE_AUDIT_LOG: bool = Field(default=True, description="Enable audit logging")
+    FEATURE_LLM_ASSIST: bool = Field(default=True, description="Enable LLM assistance for text improvement")
     
     class Config:
-        env_file = ".env"
+        env_file = "../.env"
         env_file_encoding = "utf-8"
         case_sensitive = True
+        extra = "ignore"
         
     def is_production(self) -> bool:
         """Check if running in production"""

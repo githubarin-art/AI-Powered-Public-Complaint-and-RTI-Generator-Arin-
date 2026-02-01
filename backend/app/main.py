@@ -33,6 +33,7 @@ from app.api.draft import router as draft_router
 from app.api.authority import router as authority_router
 from app.api.download import router as download_router
 from app.api.validate import router as validate_router
+from app.api.enhance import router as enhance_router
 
 
 # =============================================================================
@@ -249,6 +250,7 @@ app.include_router(draft_router, prefix="/api", tags=["Draft"])
 app.include_router(authority_router, prefix="/api", tags=["Authority"])
 app.include_router(download_router, prefix="/api", tags=["Download"])
 app.include_router(validate_router, prefix="/api", tags=["Validation"])
+app.include_router(enhance_router, prefix="/api", tags=["LLM Enhancement"])
 
 
 # =============================================================================

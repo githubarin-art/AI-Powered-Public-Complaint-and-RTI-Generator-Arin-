@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { 
-  FileText, Globe, MessageSquare, RefreshCw, 
-  ArrowLeft, Zap, CheckCircle, AlertCircle, PenTool
+  FileText, Globe, RefreshCw, 
+  ArrowLeft, Zap, CheckCircle, AlertCircle, PenTool, Sparkles, HelpCircle, Scale, Shield, Layers
 } from 'lucide-react';
 import useDebounce from '../../hooks/useDebounce';
 import { generateDraft } from '../../services/draftService';
+import { getLLMStatus } from '../../services/llmService';
 import ApplicantForm from '../../components/ApplicantForm/ApplicantForm';
 import DraftPreview from '../../components/DraftPreview/DraftPreview';
 import DownloadPanel from '../../components/DownloadPanel/DownloadPanel';
@@ -26,12 +27,36 @@ const AssistedMode = () => {
     issue_description: prefillData.prefillDescription || '',
     document_type: prefillData.documentType || 'information_request',
     language: prefillData.language || 'english',
-    tone: 'neutral'
+    tone: 'neutral',
+    enable_llm_enhancement: true  // AI enhancement enabled by default
   });
 
   const [draft, setDraft] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [llmStatus, setLlmStatus] = useState({ available: false, enabled: false });
+
+  // Check LLM status on mount
+  useEffect(() => {
+    const checkLLM = async () => {
+      const status = await getLLMStatus();
+      setLlmStatus(status);
+    };
+    checkLLM();
+  }, []);
+
+  // Handle prefill data from navigation (e.g., from Templates page)
+  useEffect(() => {
+    if (location.state?.prefillDescription) {
+      setFormData(prev => ({
+        ...prev,
+        issue_description: location.state.prefillDescription,
+        document_type: location.state.documentType || prev.document_type,
+        language: location.state.language || prev.language
+      }));
+      toast.success('Template loaded! Fill in your details to generate the draft.', { autoClose: 4000 });
+    }
+  }, [location.state]);
 
   // Debounce the entire form data to prevent too many API calls
   const debouncedData = useDebounce(formData, 1500);
@@ -55,6 +80,11 @@ const AssistedMode = () => {
     try {
       const result = await generateDraft(data);
       setDraft(result);
+      
+      // Show toast if LLM enhanced
+      if (result.llm_enhanced) {
+        toast.info('✨ Draft enhanced by AI for better clarity', { autoClose: 3000 });
+      }
     } catch (err) {
       console.error(err);
       // Handle validation errors differently
@@ -92,23 +122,44 @@ const AssistedMode = () => {
 
   const progress = getProgress();
   const progressPercent = (progress / 4) * 100;
+  
+  // Status text helper
+  const getDraftStatus = () => {
+    if (loading) return "Generating...";
+    if (progress < 4) return "More details needed";
+    return "Ready for review";
+  };
 
   return (
     <div className="assisted-mode-page">
       {/* Page Header */}
-      <div className="page-header">
-        <div className="header-content">
+      <div className="assisted-page-header">
+        <div className="container">
           <Link to="/" className="back-link">
-            <ArrowLeft size={20} />
+            <ArrowLeft size={16} />
             <span>Back to Home</span>
           </Link>
-          <div className="header-title-area">
-            <div className="header-icon">
-              <PenTool size={24} />
+          
+          <div className="page-header-row">
+            <div className="page-header-content">
+              <div className="page-header-icon">
+                <Layers size={24} />
+              </div>
+              <div className="page-header-text">
+                <h1>Assisted Drafting</h1>
+                <p>Free-text input with rule-based formatting. Optional AI language enhancement.</p>
+              </div>
             </div>
-            <div>
-              <h1>Assisted Drafting</h1>
-              <p>Write freely in your own words — we format it professionally</p>
+            
+            <div className="page-header-badges">
+              <div className="header-badge">
+                <Scale size={14} />
+                <span>Rule-Based Core</span>
+              </div>
+              <div className="header-badge ai-badge">
+                <Sparkles size={14} />
+                <span>AI Polish Available</span>
+              </div>
             </div>
           </div>
         </div>
@@ -116,32 +167,34 @@ const AssistedMode = () => {
 
       {/* Progress Bar */}
       <div className="progress-container">
-        <div className="progress-info">
-          <span className="progress-label">
-            <CheckCircle size={16} />
-            Completion Progress
-          </span>
-          <span className="progress-text">{progress}/4 required fields</span>
-        </div>
-        <div className="progress-bar">
-          <div 
-            className="progress-fill" 
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-        {progress === 4 && (
-          <div className="progress-complete">
-            <CheckCircle size={16} />
-            <span>Ready to generate!</span>
+        <div className="container progress-inner">
+          <div className="progress-info">
+            <div className="progress-label">
+              <CheckCircle size={16} className={progress === 4 ? "text-success" : "text-muted"} />
+              <span>Draft Completion</span>
+            </div>
+            <div className="progress-bar-wrapper">
+              <div 
+                className="progress-fill" 
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
           </div>
-        )}
+          
+          <div className={`status-indicator ${progress === 4 ? 'ready' : 'drafting'}`}>
+            {progress === 4 ? <Sparkles size={16} /> : <FileText size={16} />}
+            <span>{getDraftStatus()}</span>
+          </div>
+        </div>
       </div>
 
       <div className="main-content">
         <div className="split-view">
-          {/* Input Panel */}
+          {/* Input Panel (Left Side - Scrollable) */}
           <div className="input-panel">
-            <div className="panel-section">
+            
+            {/* Step 1: Applicant Info */}
+            <div className="panel-card">
               <div className="section-header-inline">
                 <h2>Your Information</h2>
                 <span className="section-badge">Step 1</span>
@@ -152,7 +205,8 @@ const AssistedMode = () => {
               />
             </div>
             
-            <div className="panel-section">
+            {/* Step 2: Issue Details */}
+            <div className="panel-card">
               <div className="section-header-inline">
                 <h2>Issue Details</h2>
                 <span className="section-badge">Step 2</span>
@@ -160,29 +214,21 @@ const AssistedMode = () => {
               
               <div className="issue-input-card">
                 <label className="input-label-large">
-                  <PenTool size={18} className="label-icon" />
-                  Describe your issue or request
-                  <span className="required-star">*</span>
+                  <span>Describe your issue or request <span className="required-star">*</span></span>
+                  <HelpCircle size={14} className="help-icon" title="Be specific. Include dates, locations, and names of officials if known." />
                 </label>
-                <p className="input-hint">
-                  Include specific details: dates, names, locations, and expected outcome
-                </p>
+                
                 <div className="ai-textarea-wrapper">
                   <textarea
                     className="form-textarea ai-input"
                     rows="8"
-                    placeholder="Example: On 15th March 2024, I visited the Municipal Office to submit my property tax payment. The clerk demanded ₹500 extra for processing despite having an official receipt. I want to report this irregularity and request information about the official fee structure..."
+                    placeholder="Example: On 15th March 2024, I visited the Municipal Office to submit my property tax payment. The clerk demanded ₹500 extra... I request information on..."
                     value={formData.issue_description}
                     onChange={(e) => setFormData({ ...formData, issue_description: e.target.value })}
                   />
                   <div className="textarea-footer">
                     <div className={`char-indicator ${formData.issue_description.length >= 20 ? 'valid' : ''}`}>
-                      {formData.issue_description.length >= 20 ? (
-                        <CheckCircle size={14} />
-                      ) : (
-                        <AlertCircle size={14} />
-                      )}
-                      <span>{formData.issue_description.length}/20 min chars</span>
+                      {formData.issue_description.length}/20 chars
                     </div>
                   </div>
                 </div>
@@ -191,25 +237,23 @@ const AssistedMode = () => {
               <div className="controls-grid">
                 <div className="control-card">
                   <label className="control-label">
-                    <FileText size={16} />
-                    Document Type
+                    <FileText size={13} /> Document Type
                   </label>
                   <select 
                     className="form-select-modern"
                     value={formData.document_type}
                     onChange={(e) => setFormData({ ...formData, document_type: e.target.value })}
                   >
-                    <option value="information_request">RTI - Information Request</option>
-                    <option value="records_request">RTI - Records Access</option>
-                    <option value="inspection_request">RTI - Inspection Request</option>
-                    <option value="grievance">Complaint - Grievance</option>
+                    <option value="information_request">RTI - Information</option>
+                    <option value="records_request">RTI - Records</option>
+                    <option value="inspection_request">RTI - Inspection</option>
+                    <option value="grievance">Complaint - General</option>
                   </select>
                 </div>
 
                 <div className="control-card">
                   <label className="control-label">
-                    <Globe size={16} />
-                    Language
+                    <Globe size={13} /> Language
                   </label>
                   <select 
                     className="form-select-modern"
@@ -221,22 +265,26 @@ const AssistedMode = () => {
                   </select>
                 </div>
 
-                <div className="control-card">
-                  <label className="control-label">
-                    <MessageSquare size={16} />
-                    Writing Tone
-                  </label>
-                  <select 
-                    className="form-select-modern"
-                    value={formData.tone}
-                    onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
-                  >
-                    <option value="neutral">Neutral</option>
-                    <option value="formal">Formal</option>
-                    <option value="assertive">Assertive</option>
-                  </select>
-                </div>
+                {/* Tone removed to simplify UI based on "avoid superficial" - can be added back if needed, but keeping it clean */}
               </div>
+
+              {/* AI Enhancement Toggle */}
+              {llmStatus.available && (
+                <div className="ai-enhancement-toggle">
+                  <span className="toggle-text">
+                    <Sparkles size={14} style={{ marginRight: '6px' }} />
+                    AI Polish
+                  </span>
+                  <label className="toggle-label">
+                    <input
+                      type="checkbox"
+                      checked={formData.enable_llm_enhancement}
+                      onChange={(e) => setFormData({ ...formData, enable_llm_enhancement: e.target.checked })}
+                    />
+                    <div className="toggle-switch"></div>
+                  </label>
+                </div>
+              )}
 
               <button 
                 className={`generate-btn ${loading ? 'loading' : ''}`} 
@@ -245,27 +293,25 @@ const AssistedMode = () => {
               >
                 {loading ? (
                   <>
-                    <RefreshCw className="spin" size={20} />
-                    <span>Generating Draft...</span>
+                    <RefreshCw className="spin" size={18} />
+                    <span>Processing...</span>
                   </>
                 ) : (
                   <>
-                    <Zap size={20} />
-                    <span>Generate Draft</span>
+                    <Zap size={18} />
+                    <span>Update Draft</span>
                   </>
                 )}
               </button>
             </div>
           </div>
 
-          {/* Preview Panel */}
+          {/* Preview Panel (Right Side - Document Review) */}
           <div className="preview-panel">
-            <div className="preview-header">
-              <h2>
-                <FileText size={20} />
-                Live Preview
-              </h2>
-              {draft && <span className="preview-badge">Auto-updating</span>}
+            {/* Phase indicator */}
+            <div className="phase-indicator">
+              <span className="phase-label">Phase 2</span>
+              <span className="phase-title">Document Review</span>
             </div>
 
             {error && (
@@ -276,44 +322,63 @@ const AssistedMode = () => {
             )}
             
             {draft ? (
-              <div className="draft-content">
+              <div className="document-review-section">
+                {/* AI Enhancement Badge - subtle */}
+                {draft.llm_enhanced && (
+                  <div className="enhancement-notice">
+                    <Sparkles size={14} />
+                    <span>AI-polished for clarity</span>
+                  </div>
+                )}
+
                 {draft.confidence && (
                   <ConfidenceNotice 
                     level={draft.confidence.level} 
                     explanation={draft.confidence.explanation}
                   />
                 )}
-                <DraftPreview 
-                  draftText={draft.draft_text} 
-                  onEdit={handleDraftEdit}
-                />
-                <div className="download-section">
+                
+                {/* The Document Review Pane */}
+                <div className="document-container">
+                   <DraftPreview 
+                     draftText={draft.draft_text} 
+                     onEdit={handleDraftEdit}
+                     documentType={formData.document_type}
+                     language={formData.language}
+                     mode="Assisted"
+                     isReady={!loading}
+                   />
+                </div>
+
+                {/* Export Section - Separated from document */}
+                <div className="export-section">
+                  <div className="export-header">
+                    <h3>Export RTI Document</h3>
+                    <p>Download your reviewed document for submission</p>
+                  </div>
                   <DownloadPanel draftData={{ ...formData, draft_text: draft.draft_text }} />
                 </div>
               </div>
             ) : (
               <div className="empty-state">
-                <div className="empty-icon">
-                  <FileText size={48} />
+                <div className="empty-icon-container">
+                  <div className="empty-icon-paper"></div>
+                  <PenTool size={32} className="empty-icon-pen" />
                 </div>
-                <h3>Your Draft Preview</h3>
-                <p>Fill in the required fields and your professionally formatted draft will appear here automatically.</p>
+                <h3>Document Preview</h3>
+                <p>Complete the required fields to generate your legal document.</p>
                 <div className="empty-checklist">
                   <div className={`checklist-item ${formData.applicant_name?.length >= 2 ? 'done' : ''}`}>
-                    {formData.applicant_name?.length >= 2 ? <CheckCircle size={16} /> : <span className="bullet" />}
-                    Your name
+                    <span className="checkbox">{formData.applicant_name?.length >= 2 && <CheckCircle size={12} />}</span>
+                    Applicant Name
                   </div>
                   <div className={`checklist-item ${formData.applicant_address?.length >= 10 ? 'done' : ''}`}>
-                    {formData.applicant_address?.length >= 10 ? <CheckCircle size={16} /> : <span className="bullet" />}
-                    Full address
-                  </div>
-                  <div className={`checklist-item ${formData.applicant_state?.length >= 2 ? 'done' : ''}`}>
-                    {formData.applicant_state?.length >= 2 ? <CheckCircle size={16} /> : <span className="bullet" />}
-                    State
+                    <span className="checkbox">{formData.applicant_address?.length >= 10 && <CheckCircle size={12} />}</span>
+                    Address
                   </div>
                   <div className={`checklist-item ${formData.issue_description?.length >= 20 ? 'done' : ''}`}>
-                    {formData.issue_description?.length >= 20 ? <CheckCircle size={16} /> : <span className="bullet" />}
-                    Issue description (20+ chars)
+                    <span className="checkbox">{formData.issue_description?.length >= 20 && <CheckCircle size={12} />}</span>
+                    Issue Description
                   </div>
                 </div>
               </div>

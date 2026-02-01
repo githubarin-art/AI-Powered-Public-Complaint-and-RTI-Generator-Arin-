@@ -29,7 +29,7 @@ def get_translator():
         # Use a local cache directory if possible to be nice to the filesystem
         tokenizer = AutoTokenizer.from_pretrained(_model_name)
         model = AutoModelForSeq2SeqLM.from_pretrained(_model_name)
-        _translator_pipeline = pipeline("translation", model=model, tokenizer=tokenizer)
+        _translator_pipeline = pipeline("translation", model=model, tokenizer=tokenizer)  # type: ignore[call-overload]
         logger.info("Translation model loaded successfully")
         return _translator_pipeline
     except Exception as e:

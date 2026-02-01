@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FileText, Search, Copy, ArrowRight, Building2, Zap, Droplets, MapPin, Shield, HeartPulse, GraduationCap, Train, Globe } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { FileText, Search, Copy, ArrowRight, Building2, Zap, Droplets, MapPin, Shield, HeartPulse, GraduationCap, Train, Globe, ArrowLeft, BookOpen, Scale, CheckCircle2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import './Templates.css';
 
@@ -347,52 +347,99 @@ const Templates = () => {
   };
 
   return (
-    <div className="container templates-page">
-      <div className="templates-header">
-        <h1>Sample Templates</h1>
-        <p className="text-muted">Browse ready-to-use templates for common RTI and Complaint scenarios. Copy, customize, and submit.</p>
-      </div>
+    <div className="templates-page">
+      {/* Page Header */}
+      <div className="templates-page-header">
+        <div className="container">
+          <Link to="/" className="back-link">
+            <ArrowLeft size={16} />
+            <span>Back to Home</span>
+          </Link>
+          
+          <div className="page-header-content">
+            <div className="page-header-icon">
+              <BookOpen size={24} />
+            </div>
+            <div className="page-header-text">
+              <h1>RTI & Complaint Templates</h1>
+              <p>
+                Pre-validated templates following Section 6(1) of the RTI Act, 2005. 
+                These are starting points — customize with your specific details.
+              </p>
+            </div>
+          </div>
 
-      {/* Search and Filter Bar */}
-      <div className="templates-toolbar">
-        <div className="search-box">
-          <Search size={18} className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search by department, keyword..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <div className="category-filters">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              className={`filter-btn ${selectedCategory === cat ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-          <span className="filter-divider">|</span>
-          {LANGUAGES.map(lang => (
-            <button
-              key={lang}
-              className={`filter-btn lang-btn ${selectedLanguage === lang ? 'active' : ''}`}
-              onClick={() => setSelectedLanguage(lang)}
-            >
-              {lang === 'Hindi' && <Globe size={14} />}
-              {lang}
-            </button>
-          ))}
+          <div className="page-header-badges">
+            <div className="header-badge">
+              <Scale size={14} />
+              <span>Legally Structured</span>
+            </div>
+            <div className="header-badge">
+              <CheckCircle2 size={14} />
+              <span>Rule-Validated</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Templates Grid */}
-      <div className="templates-grid">
-        {filteredTemplates.map(template => {
-          const Icon = template.icon;
-          const isExpanded = expandedTemplate === template.id;
+      <div className="container templates-content">
+        {/* Search and Filter Bar */}
+        <div className="templates-toolbar">
+          <div className="search-box">
+            <Search size={18} className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search by department, keyword..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="category-filters">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                className={`filter-btn ${selectedCategory === cat ? 'active' : ''}`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+            <span className="filter-divider">|</span>
+            {LANGUAGES.map(lang => (
+              <button
+                key={lang}
+                className={`filter-btn lang-btn ${selectedLanguage === lang ? 'active' : ''}`}
+                onClick={() => setSelectedLanguage(lang)}
+              >
+                {lang === 'Hindi' && <Globe size={14} />}
+                {lang}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Results Count */}
+        <div className="results-summary">
+          <span className="results-count">{filteredTemplates.length} templates</span>
+          {(selectedCategory !== 'All' || selectedLanguage !== 'All' || searchQuery) && (
+            <button 
+              className="clear-filters"
+              onClick={() => {
+                setSelectedCategory('All');
+                setSelectedLanguage('All');
+                setSearchQuery('');
+              }}
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+
+        {/* Templates Grid */}
+        <div className="templates-grid">
+          {filteredTemplates.map(template => {
+            const Icon = template.icon;
+            const isExpanded = expandedTemplate === template.id;
 
           return (
             <div key={template.id} className={`template-card ${isExpanded ? 'expanded' : ''}`}>
@@ -463,16 +510,45 @@ const Templates = () => {
 
       {/* Info Section */}
       <div className="templates-info">
-        <h3>How to Use These Templates</h3>
-        <ol>
-          <li><strong>Browse:</strong> Find a template that matches your requirement.</li>
-          <li><strong>View:</strong> Click "View Sample Text" to see the full template.</li>
-          <li><strong>Customize:</strong> Replace the placeholders [IN BRACKETS] with your specific details.</li>
-          <li><strong>Generate:</strong> Click "Use This Template" to auto-fill the drafting form.</li>
-        </ol>
-        <p className="disclaimer">
-          <strong>Note:</strong> These are sample templates for guidance. Please customize them with accurate information relevant to your case.
-        </p>
+        <div className="info-header">
+          <h3>How to Use These Templates</h3>
+          <p className="info-subtitle">Follow these steps to create a compliant application</p>
+        </div>
+        <div className="info-steps">
+          <div className="info-step">
+            <div className="info-step-number">1</div>
+            <div className="info-step-content">
+              <strong>Browse</strong>
+              <p>Find a template that matches your requirement by department or category.</p>
+            </div>
+          </div>
+          <div className="info-step">
+            <div className="info-step-number">2</div>
+            <div className="info-step-content">
+              <strong>View</strong>
+              <p>Click "View Sample Text" to see the full template structure.</p>
+            </div>
+          </div>
+          <div className="info-step">
+            <div className="info-step-number">3</div>
+            <div className="info-step-content">
+              <strong>Customize</strong>
+              <p>Replace placeholders [IN BRACKETS] with your specific details.</p>
+            </div>
+          </div>
+          <div className="info-step">
+            <div className="info-step-number">4</div>
+            <div className="info-step-content">
+              <strong>Generate</strong>
+              <p>Click "Use This Template" to auto-fill the drafting form.</p>
+            </div>
+          </div>
+        </div>
+        <div className="info-disclaimer">
+          <strong>Note:</strong> These templates are starting points for guidance. The rule engine will 
+          validate and format your input to ensure compliance with RTI Act requirements.
+        </div>
+      </div>
       </div>
     </div>
   );

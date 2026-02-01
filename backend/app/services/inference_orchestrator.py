@@ -32,6 +32,8 @@ class IntentType(str, Enum):
     RTI = "rti"
     COMPLAINT = "complaint"
     APPEAL = "appeal"
+    FOLLOW_UP = "follow_up"
+    ESCALATION = "escalation"
     UNKNOWN = "unknown"
 
 

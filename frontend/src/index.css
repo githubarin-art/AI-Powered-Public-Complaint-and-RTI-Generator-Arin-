@@ -1,126 +1,86 @@
 :root {
-  /* Colors */
-  --color-primary: #0C1E35;        /* Deep Navy - Brand/Structure */
-  --color-primary-hover: #162B4D;
+  /* ===== COLOR SYSTEM: Modern Civic (Warm & Authoritative) ===== */
   
-  --color-accent: #FF5100;         /* Construction Orange - High Visibility Actions */
-  --color-accent-hover: #D64200;
+  /* BRAND COLORS */
+  --color-brand-orange: #EA580C;   /* Orange 600 - The "Action" color */
+  --color-brand-orange-light: #FFF7ED; /* Orange 50 - Backgrounds */
+  --color-brand-navy: #0F172A;     /* Slate 900 - The "Authority" color */
+  
+  /* TEXT */
+  --color-text-primary: #1C1917;   /* Stone 900 - Warm Black */
+  --color-text-secondary: #57534E; /* Stone 600 - Warm Grey */
+  --color-text-tertiary: #A8A29E;  /* Stone 400 */
+  --color-text-inverse: #FFFFFF;
 
-  --color-success: #00875A;        /* Green - Success */
-  --color-secondary: #00875A;      /* Legacy Green mapping */
-  --color-secondary-hover: #006644;
-  
-  --color-bg: #FFFFFF;             /* White */
+  /* BACKGROUNDS */
+  --color-bg: #FAFAF9;             /* Stone 50 - Warm Paper */
   --color-bg-card: #FFFFFF;
-  --color-bg-subtle: #F6F8FA;      /* Very Light Gray-Blue */
+  --color-bg-subtle: #F5F5F4;      /* Stone 100 */
+  --color-bg-accent: #FFF7ED;      /* Orange 50 */
   
-  --color-text-body: #2C3540;      /* Dark Slate */
-  --color-text-heading: #0C1E35;   /* Deep Navy (Same as primary) */
-  --color-text-light: #5A6B80;     /* Muted Blue-Grey */
+  /* MAPPING TO FUNCTIONAL NAMES */
+  --color-primary: var(--color-brand-orange);
+  --color-primary-hover: #C2410C;  /* Orange 700 */
+  --color-accent: var(--color-brand-navy);
   
-  --color-border: #DDE2E8;         /* Cool Grey Border */
-  --color-error: #DE350B;          /* Red */
-  --color-warning: #FF991F;        /* Amber */
+  --color-border: #E7E5E4;         /* Stone 200 */
+  --color-border-hover: #D6D3D1;   /* Stone 300 */
+  
+  /* STATUS */
+  --color-success: #15803D;
+  --color-warning: #B45309;
+  --color-error: #BE123C;
 
-  /* Spacing */
+  /* ===== TYPOGRAPHY ===== */
+  --font-serif: "IBM Plex Serif", "Georgia", serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Headings */
+  --h1-size: 2.5rem;
+  --h1-line-height: 1.2;
+  --h2-size: 2rem;
+  --h2-line-height: 1.25;
+  --h3-size: 1.5rem;
+
+  /* ===== SPACING ===== */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 5rem;
 
-  /* Typography */
-  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-    
-  /* UI Elements - Sharp, Industrial */
-  --border-radius-sm: 0px;
-  --border-radius-md: 2px;
-  --border-radius-lg: 4px;
-  --box-shadow-card: 0 1px 3px rgba(12, 30, 53, 0.1), 0 4px 12px rgba(12, 30, 53, 0.05); 
-  --box-shadow-focus: 0 0 0 2px rgba(255, 81, 0, 0.4); /* Orange Focus Ring */
+  /* ===== UI TOKENS ===== */
+  --border-radius-sm: 6px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  
+  /* Modern "Float" Shadows (Not brutal, not flat) */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-float: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
 }
 
 body {
   margin: 0;
-  font-family: var(--font-family-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--color-bg);
-  color: var(--color-text-body);
+  font-family: var(--font-sans);
+  font-size: 16px;
   line-height: 1.6;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--color-text-heading);
-  font-weight: 700;
-  line-height: 1.25;
+  font-family: var(--font-serif);
+  color: var(--color-brand-navy);
+  font-weight: 600;
+  margin-top: 0;
   margin-bottom: var(--spacing-md);
+  letter-spacing: -0.01em;
 }
 
-label {
-  font-weight: 500;
-  margin-bottom: 0.35rem; 
-  display: block;
-  color: var(--color-text-heading);
-}
-
-.card {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
-  /* Removed heavy shadow for a cleaner, flatter 'dashboard' look */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
-  padding: 2rem;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-select,
-textarea {
-  width: 100%;
-  padding: 0.625rem 0.875rem; /* Slightly more compact/technical */
-  font-family: inherit;
-  font-size: 0.9375rem; /* 15px - standard for data heavy apps */
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fff;
-  color: var(--color-text-body);
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-  border-color: var(--color-accent); /* Orange border on focus */
-  box-shadow: var(--box-shadow-focus);
-}
-
-a {
-  color: var(--color-primary); /* Navy Links */
-  text-decoration: none;
-  font-weight: 500;
-}
-
-a:hover {
-  text-decoration: underline;
-  color: var(--color-primary-hover);
-}
-
-button {
-  font-family: inherit;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-code {
-  font-family: var(--font-family-mono);
+p {
+  margin-bottom: var(--spacing-lg);
+  max-width: 70ch;
 }

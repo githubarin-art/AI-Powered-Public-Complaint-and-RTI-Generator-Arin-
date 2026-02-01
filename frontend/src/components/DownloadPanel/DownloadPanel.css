@@ -1,13 +1,17 @@
+/* ============================================
+   DOWNLOAD PANEL - Institutional Civic Design
+   ============================================ */
+
 .download-panel-card {
   background: white;
-  border-radius: var(--border-radius-lg);
-  padding: 1.5rem;
-  /* Removed shadow for dashboard look */
+  border-radius: var(--border-radius-md);
+  padding: 1.25rem;
   border: 1px solid var(--color-border);
+  margin-top: 1rem;
 }
 
 .download-panel-card .panel-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
@@ -16,22 +20,23 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 1.125rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text-heading);
-  margin: 0 0 0.25rem 0;
+  color: var(--color-brand-navy);
+  margin: 0 0 0.35rem 0;
 }
 
 .download-panel-card .panel-header p {
-  color: var(--color-text-light);
-  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
   margin: 0;
 }
 
 .download-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .download-btn {
@@ -39,90 +44,74 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 1.25rem 1rem;
+  gap: 0.4rem;
+  padding: 0.875rem;
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-md);
   background: white;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   width: 100%;
 }
 
-.download-btn:hover:not(:disabled) {
-  /* No Lift - Industrial Feel */
-  border-color: var(--color-text-heading);
+.download-btn span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: color 0.15s;
+}
+
+.download-btn__icon {
+  color: var(--color-text-tertiary);
+  transition: color 0.15s;
+}
+
+/* Base Hover */
+.download-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* PDF Specific Hover */
+.download-btn.pdf-btn:hover {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.download-btn.pdf-btn:hover .download-btn__icon {
+  color: #ef4444;
+}
+
+.download-btn.pdf-btn:hover span {
+  color: #7f1d1d;
+}
+
+/* DOCX Specific Hover */
+.download-btn.docx-btn:hover {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.download-btn.docx-btn:hover .download-btn__icon {
+  color: #2563eb;
+}
+
+.download-btn.docx-btn:hover span {
+  color: #1e3a8a;
+}
+
+/* TXT Specific Hover */
+.download-btn:hover:not(.pdf-btn):not(.docx-btn) {
+  border-color: var(--color-text-tertiary);
   background-color: var(--color-bg-subtle);
 }
 
-.download-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+.download-btn:hover:not(.pdf-btn):not(.docx-btn) .download-btn__icon {
+  color: var(--color-text-primary);
 }
 
-.download-btn .btn-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--border-radius-md);
-  font-weight: 700;
-  font-size: 0.875rem;
-  /* Default gray style */
-  background: var(--color-bg-subtle);
-  color: var(--color-text-body);
-}
-
-.download-btn span {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-text-body);
-}
-
-/* PDF Button Style */
-.pdf-btn .btn-icon {
-  background: #FFF1F0; /* Very light red */
-  color: #E02F2F;      /* Strong Red */
-}
-.pdf-btn:hover:not(:disabled) .btn-icon {
-  background: #E02F2F;
-  color: white;
-}
-
-/* DOCX Button Style */
-.docx-btn .btn-icon {
-  background: #F0F5FF; /* Very light blue */
-  color: #0050E6;      /* Brand Blue */
-}
-.docx-btn:hover:not(:disabled) .btn-icon {
-  background: #0050E6;
-  color: white;
-}
-
-/* TXT Button Style */
-.txt-btn .btn-icon {
-  background: #F4F5F7;
-  color: #505F79;
-}
-.txt-btn:hover:not(:disabled) .btn-icon {
-  background: #172B4D;
-  color: white;
-}
-
-@media (max-width: 640px) {
+/* Responsive */
+@media (max-width: 600px) {
   .download-grid {
     grid-template-columns: 1fr;
-  }
-  
-  .download-btn {
-    flex-direction: row;
-    justify-content: flex-start;
-    padding: 1rem;
-  }
-  
-  .download-btn .btn-icon {
-    width: 40px;
-    height: 40px;
   }
 }

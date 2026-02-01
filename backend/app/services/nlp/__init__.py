@@ -8,6 +8,7 @@ Components:
 - confidence_gate: Controls when AI predictions require user confirmation
 """
 
+# Import spaCy NLP functions directly
 from .spacy_engine import (
     extract_entities,
     extract_entities_detailed,
@@ -23,6 +24,7 @@ from .spacy_engine import (
     EntityType,
 )
 
+# Import DistilBERT functions
 from .distilbert_semantic import (
     compute_similarity,
     rank_by_similarity,
@@ -38,10 +40,36 @@ from .distilbert_semantic import (
     SemanticAnalysisResult,
 )
 
+# Import confidence gate functions
+from .confidence_gate import (
+    gate_result,
+    should_use_nlp,
+    ConfidenceLevel,
+    GatedResult,
+)
+
+# Import translator functions
 from .translator import (
     translate_to_hindi,
     get_translator,
 )
+
+# Export main functions
+__all__ = [
+    "extract_entities",
+    "extract_key_phrases", 
+    "analyze_sentiment_basic",
+    "full_analysis",
+    "compute_similarity",
+    "rank_by_similarity",
+    "gate_result",
+    "should_use_nlp",
+    "ConfidenceLevel",
+    "preload_spacy",
+    "preload_all_models",
+    "translate_to_hindi",
+    "get_translator",
+]
 
 from .confidence_gate import (
     ConfidenceLevel,

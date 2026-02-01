@@ -11,13 +11,17 @@ Following MODEL_USAGE_POLICY:
 
 import spacy
 from spacy.matcher import PhraseMatcher, Matcher
+import logging
+
+logger = logging.getLogger(__name__)
+
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, field
 from enum import Enum
 import re
-import logging
 
-logger = logging.getLogger(__name__)
+# spaCy availability flag - True since we're using Python 3.13 compatible version
+SPACY_AVAILABLE = True
 
 # Load model (will be initialized on first use)
 _nlp = None
@@ -89,6 +93,9 @@ class NLPResult:
 def get_nlp():
     """Lazy load spaCy model with error handling"""
     global _nlp
+    if not SPACY_AVAILABLE:
+        raise RuntimeError("spaCy not available due to compatibility issues")
+    
     if _nlp is None:
         try:
             _nlp = spacy.load("en_core_web_sm")
@@ -103,6 +110,9 @@ def get_nlp():
 def get_phrase_matcher() -> PhraseMatcher:
     """Initialize phrase matcher with civic-specific patterns"""
     global _phrase_matcher
+    if not SPACY_AVAILABLE:
+        raise RuntimeError("spaCy not available for phrase matching")
+        
     if _phrase_matcher is None:
         nlp = get_nlp()
         _phrase_matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
@@ -201,6 +211,19 @@ def extract_entities(text: str) -> Dict[str, List[str]]:
     - Reference number extraction
     - Phone/email patterns
     """
+    if not SPACY_AVAILABLE:
+        logger.warning("spaCy not available, returning empty entities")
+        return {
+            "PERSON": [],
+            "ORG": [],
+            "GPE": [],
+            "DATE": [],
+            "MONEY": [],
+            "REFERENCE_NUMBER": [],
+            "PHONE": [],
+            "EMAIL": []
+        }
+    
     nlp = get_nlp()
     doc = nlp(text)
     
@@ -359,6 +382,12 @@ def extract_key_phrases(text: str, top_n: int = 10) -> List[str]:
     Extract key noun phrases from text.
     Enhanced with better filtering and ranking.
     """
+    if not SPACY_AVAILABLE:
+        logger.warning("spaCy not available, using basic phrase extraction")
+        # Simple fallback: extract words over 4 characters
+        words = text.split()
+        return [word for word in words if len(word) > 4][:top_n]
+    
     nlp = get_nlp()
     doc = nlp(text)
     
@@ -429,6 +458,7 @@ def analyze_sentiment_basic(text: str) -> str:
     
     Note: This is rule-based, not ML-based (per MODEL_USAGE_POLICY).
     """
+    # This function doesn't use spaCy, so it works without it
     text_lower = text.lower()
     
     urgent_words = [
