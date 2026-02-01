@@ -236,7 +236,7 @@ export const EmptyState = ({
   );
 };
 
-export default {
+const LoadingState = {
   LoadingSpinner,
   LoadingOverlay,
   SkeletonLoader,
@@ -246,3 +246,5 @@ export default {
   ProgressIndicator,
   EmptyState
 };
+
+export default LoadingState;

@@ -162,8 +162,10 @@ export const quickValidate = (data) => {
   };
 };
 
-export default {
+const validationService = {
   validateRTIRequest,
   validateDraftEdit,
   quickValidate
 };
+
+export default validationService;

@@ -24,6 +24,22 @@
   margin: 0;
 }
 
+.btn-text-action {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  transition: all 0.2s ease;
+}
+
+.btn-text-action:hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
 .preview-text-container {
   flex: 1;
   background-color: var(--color-bg-subtle);

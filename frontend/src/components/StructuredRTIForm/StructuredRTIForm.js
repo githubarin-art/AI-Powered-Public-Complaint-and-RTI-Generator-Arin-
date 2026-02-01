@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, HelpCircle, Calendar, Building, FileText, Clock, Info } from 'lucide-react';
+import { AlertCircle, CheckCircle, HelpCircle, Calendar, Building, FileText, Info } from 'lucide-react';
 import './StructuredRTIForm.css';
 
 // Validation rules for RTI requests
@@ -114,6 +114,7 @@ const StructuredRTIForm = ({ data, onChange, language = 'english', onValidationC
     if (onValidationChange) {
       onValidationChange(isValid, newErrors);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, language]);
 
   const handleBlur = (fieldName) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AlertTriangle, Edit3, Eye, Shield, Info, CheckCircle, X, RotateCcw } from 'lucide-react';
+import { AlertTriangle, Edit3, Eye, Shield, CheckCircle, X, RotateCcw } from 'lucide-react';
 import './ConstrainedDraftEditor.css';
 
 // Critical patterns that should be preserved
@@ -16,7 +16,8 @@ const CRITICAL_PATTERNS = {
   ]
 };
 
-// Sections that are editable vs protected
+// Sections that are editable vs protected (used for future validation)
+// eslint-disable-next-line no-unused-vars
 const SECTION_TYPES = {
   protected: ['addressee', 'legal_reference', 'signature_block'],
   editable: ['information_sought', 'time_period', 'additional_details']
@@ -52,6 +53,7 @@ const ConstrainedDraftEditor = ({
     } else {
       setWarnings([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedText, originalText]);
 
   // Find critical patterns in text and highlight them

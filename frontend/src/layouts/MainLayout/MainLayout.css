@@ -40,12 +40,11 @@
 .logo-icon-wrapper {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--color-primary), #1C314D);
-  border-radius: 4px; /* Sharper */
+  background-color: var(--color-primary);
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .main-nav {

@@ -3,6 +3,28 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 /**
+ * Validate required fields before API call
+ */
+const validateDraftData = (data) => {
+  const errors = [];
+  
+  if (!data.applicant_name || data.applicant_name.length < 2) {
+    errors.push('Name is required (min 2 characters)');
+  }
+  if (!data.applicant_address || data.applicant_address.length < 10) {
+    errors.push('Address is required (min 10 characters)');
+  }
+  if (!data.applicant_state || data.applicant_state.length < 2) {
+    errors.push('State is required');
+  }
+  if (!data.issue_description || data.issue_description.length < 20) {
+    errors.push('Issue description is required (min 20 characters)');
+  }
+  
+  return errors;
+};
+
+/**
  * Transform flat frontend data to nested backend schema
  */
 const transformToBackendSchema = (data) => {
@@ -27,7 +49,7 @@ const transformToBackendSchema = (data) => {
       description: data.issue_description || '',
       specific_request: data.specific_request || null,
       time_period: data.time_period || null,
-      category: data.department_hint || data.issue_category || null
+      category: data.issue_category || data.department_hint || null
     },
     authority: authority,
     language: data.language || 'english',
@@ -61,6 +83,15 @@ const transformResponse = (response) => {
 };
 
 export const generateDraft = async (data) => {
+  // Validate required fields first
+  const validationErrors = validateDraftData(data);
+  if (validationErrors.length > 0) {
+    const error = new Error('Validation failed');
+    error.validationErrors = validationErrors;
+    error.isValidationError = true;
+    throw error;
+  }
+  
   try {
     const backendPayload = transformToBackendSchema(data);
     const response = await axios.post(`${API_URL}/draft`, backendPayload);

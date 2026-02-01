@@ -88,7 +88,8 @@ label:has(+ [aria-required="true"])::after {
 
 /* Associate error messages with inputs */
 [aria-describedby] {
-  /* Ensure error messages are announced */
+  /* Ensure error messages are announced - handled by semantic HTML */
+  position: relative;
 }
 
 /* Disabled state visual feedback */
@@ -268,6 +269,7 @@ aside[role="complementary"] {
 [role="dialog"],
 [role="alertdialog"] {
   /* Focus should be managed via JS */
+  position: fixed;
 }
 
 /* Modal backdrop should not be tabbable */
@@ -282,11 +284,13 @@ aside[role="complementary"] {
 [role="alert"],
 [aria-live] {
   /* Content will be announced by screen readers */
+  display: block;
 }
 
 /* Alert should be immediately announced */
 [role="alert"] {
   /* aria-atomic="true" ensures entire content is read */
+  display: block;
 }
 
 /* ===== TABLES ===== */
@@ -303,6 +307,7 @@ th {
 /* Ensure data cells are associated with headers */
 th[scope] {
   /* Good practice: use scope="col" or scope="row" */
+  font-weight: 600;
 }
 
 /* ===== IMAGES & ICONS ===== */
@@ -312,11 +317,15 @@ img[alt=""],
 [role="presentation"],
 [aria-hidden="true"] {
   /* Hidden from assistive tech */
+  user-select: none;
 }
 
 /* Icon buttons need labels */
 button:has(> svg:only-child) {
   /* Should have aria-label */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ===== KEYBOARD NAVIGATION ===== */
@@ -352,6 +361,7 @@ button:has(> svg:only-child) {
 /* Focus trap container */
 .focus-trap {
   /* Managed via JS - focus stays within this container */
+  position: relative;
 }
 
 /* Announce text changes to screen readers */

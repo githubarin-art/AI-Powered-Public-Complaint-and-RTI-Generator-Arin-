@@ -16,6 +16,7 @@ from loguru import logger
 
 from app.services.draft_assembler import get_draft_assembler, DocumentType
 from app.services.inference_orchestrator import IntentType
+from app.services.nlp import translate_to_hindi
 from app.utils.text_sanitizer import clean_input, warn_about_pii
 from app.utils.tone import suggest_tone
 from app.config import get_settings
@@ -249,19 +250,42 @@ async def generate_draft(request: DraftRequest) -> DraftResponse:
         if language not in ["english", "hindi"]:
             language = "english"
         
+        # Translation logic
+        final_description = cleaned_description
+        final_specific = cleaned_specific
+        
+        if language == "hindi":
+             try:
+                 from app.utils.language_normalizer import detect_language
+                 # Try to detect if input is English and wants Hindi output
+                 if detect_language(cleaned_description) != "hi":
+                     logger.info("Translating description to Hindi")
+                     trans_desc = translate_to_hindi(cleaned_description)
+                     if trans_desc:
+                         final_description = trans_desc
+                         
+                 if cleaned_specific and detect_language(cleaned_specific) != "hi":
+                     logger.info("Translating specific request to Hindi")
+                     trans_spec = translate_to_hindi(cleaned_specific)
+                     if trans_spec:
+                         final_specific = trans_spec
+             except Exception as e:
+                 logger.error(f"Translation preprocessing failed: {e}")
+                 # Fallback to original text matches behavior if translation service fails
+        
         # Generate draft
         result = assembler.assemble_draft(
             document_type=doc_type,
             applicant_name=request.applicant.name,
             applicant_address=request.applicant.address,
             applicant_state=request.applicant.state,
-            issue_description=cleaned_description,
+            issue_description=final_description,
             applicant_phone=request.applicant.phone,
             applicant_email=request.applicant.email,
             department_name=authority.department_name,
             department_address=authority.department_address,
             authority_designation=authority.designation,
-            specific_request=cleaned_specific,
+            specific_request=final_specific,
             time_period=request.issue.time_period,
             issue_category=request.issue.category,
             additional_context=additional,

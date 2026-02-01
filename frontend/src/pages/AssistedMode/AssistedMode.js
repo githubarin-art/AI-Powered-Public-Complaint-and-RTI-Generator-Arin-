@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Sparkles, FileText, Globe, MessageSquare, RefreshCw } from 'lucide-react';
+import { 
+  FileText, Globe, MessageSquare, RefreshCw, 
+  ArrowLeft, Zap, CheckCircle, AlertCircle, PenTool
+} from 'lucide-react';
 import useDebounce from '../../hooks/useDebounce';
 import { generateDraft } from '../../services/draftService';
 import ApplicantForm from '../../components/ApplicantForm/ApplicantForm';
@@ -33,9 +36,15 @@ const AssistedMode = () => {
   // Debounce the entire form data to prevent too many API calls
   const debouncedData = useDebounce(formData, 1500);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // Only generate if we have minimum required fields
-    if (debouncedData.issue_description && debouncedData.issue_description.length > 10) {
+    // Only generate if we have all minimum required fields
+    const hasName = debouncedData.applicant_name && debouncedData.applicant_name.length >= 2;
+    const hasAddress = debouncedData.applicant_address && debouncedData.applicant_address.length >= 10;
+    const hasState = debouncedData.applicant_state && debouncedData.applicant_state.length >= 2;
+    const hasDescription = debouncedData.issue_description && debouncedData.issue_description.length >= 20;
+    
+    if (hasName && hasAddress && hasState && hasDescription) {
       handleGenerateDraft(debouncedData);
     }
   }, [debouncedData]);
@@ -48,8 +57,12 @@ const AssistedMode = () => {
       setDraft(result);
     } catch (err) {
       console.error(err);
-      // Don't show toast on auto-updates to avoid spamming
-      setError("Could not update draft. Please check your connection.");
+      // Handle validation errors differently
+      if (err.isValidationError) {
+        setError(`Please fill required fields: ${err.validationErrors.join(', ')}`);
+      } else {
+        setError("Could not update draft. Please check your connection.");
+      }
     } finally {
       setLoading(false);
     }
@@ -67,123 +80,245 @@ const AssistedMode = () => {
     setDraft(prev => ({ ...prev, draft_text: newText }));
   };
 
+  // Calculate progress
+  const getProgress = () => {
+    let filled = 0;
+    if (formData.applicant_name?.length >= 2) filled++;
+    if (formData.applicant_address?.length >= 10) filled++;
+    if (formData.applicant_state?.length >= 2) filled++;
+    if (formData.issue_description?.length >= 20) filled++;
+    return filled;
+  };
+
+  const progress = getProgress();
+  const progressPercent = (progress / 4) * 100;
+
   return (
-    <div className="container assisted-mode">
-      <div className="header-section">
-        <h2>Assisted Drafting</h2>
-        <p className="text-muted">Write freely, and we'll format it for you.</p>
-      </div>
-
-      <div className="split-view">
-        <div className="input-panel">
-          <ApplicantForm 
-            data={formData} 
-            onChange={(newData) => setFormData(newData)} 
-          />
-          
-          <div className="card mt-4">
-            <h3 className="issue-heading">Issue Details</h3>
-            <div className="input-group">
-              <label className="input-label big-label">
-                Describe your issue or request <span className="text-error">*</span>
-              </label>
-              <div className="ai-textarea-wrapper">
-                 <Sparkles size={18} className="ai-icon-sparkle" />
-                 <textarea
-                    className="form-textarea ai-input"
-                    rows="8"
-                    placeholder="Describe specific details like incidents, dates, names of officials, and what action you expect. The more context you provide, the better the draft."
-                    value={formData.issue_description}
-                    onChange={(e) => setFormData({ ...formData, issue_description: e.target.value })}
-                 />
-                 <div className="char-count">
-                    {formData.issue_description.length} chars
-                 </div>
-              </div>
+    <div className="assisted-mode-page">
+      {/* Page Header */}
+      <div className="page-header">
+        <div className="header-content">
+          <Link to="/" className="back-link">
+            <ArrowLeft size={20} />
+            <span>Back to Home</span>
+          </Link>
+          <div className="header-title-area">
+            <div className="header-icon">
+              <PenTool size={24} />
             </div>
-            
-            <div className="controls-row">
-               <div className="control-group">
-                <label className="input-label"><FileText size={14} /> Doc Type</label>
-                <select 
-                  className="form-select"
-                  value={formData.document_type}
-                  onChange={(e) => setFormData({ ...formData, document_type: e.target.value })}
-                >
-                  <option value="information_request">RTI - Information</option>
-                  <option value="records_request">RTI - Records</option>
-                  <option value="inspection_request">RTI - Inspection</option>
-                  <option value="grievance">Complaint - Grievance</option>
-                </select>
-              </div>
-
-               <div className="control-group">
-                <label className="input-label"><Globe size={14} /> Language</label>
-                <select 
-                  className="form-select"
-                  value={formData.language}
-                  onChange={(e) => setFormData({ ...formData, language: e.target.value })}
-                >
-                  <option value="english">English</option>
-                  <option value="hindi">Hindi</option>
-                </select>
-              </div>
-
-               <div className="control-group">
-                <label className="input-label"><MessageSquare size={14} /> Tone</label>
-                <select 
-                  className="form-select"
-                  value={formData.tone}
-                  onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
-                >
-                  <option value="neutral">Neutral</option>
-                  <option value="formal">Formal</option>
-                  <option value="assertive">Assertive</option>
-                </select>
-              </div>
+            <div>
+              <h1>Assisted Drafting</h1>
+              <p>Write freely in your own words — we format it professionally</p>
             </div>
-
-            <button 
-                className={`btn btn-primary pulse-btn mt-4 ${loading ? 'loading' : ''}`} 
-                onClick={handleManualRegenerate}
-                disabled={loading}
-            >
-                {loading ? <RefreshCw className="spin" size={18} /> : <Sparkles size={18} />}
-                {loading ? ' Generating Draft...' : ' Regenerate Draft'}
-            </button>
           </div>
         </div>
+      </div>
 
-        <div className="preview-panel">
-          {error && (
-             <div className="card" style={{ borderColor: 'var(--color-error)', color: 'var(--color-error)' }}>
-               {error}
-             </div>
-          )}
-          
-          {draft ? (
-            <>
-              {draft.confidence && (
-                <ConfidenceNotice 
+      {/* Progress Bar */}
+      <div className="progress-container">
+        <div className="progress-info">
+          <span className="progress-label">
+            <CheckCircle size={16} />
+            Completion Progress
+          </span>
+          <span className="progress-text">{progress}/4 required fields</span>
+        </div>
+        <div className="progress-bar">
+          <div 
+            className="progress-fill" 
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+        {progress === 4 && (
+          <div className="progress-complete">
+            <CheckCircle size={16} />
+            <span>Ready to generate!</span>
+          </div>
+        )}
+      </div>
+
+      <div className="main-content">
+        <div className="split-view">
+          {/* Input Panel */}
+          <div className="input-panel">
+            <div className="panel-section">
+              <div className="section-header-inline">
+                <h2>Your Information</h2>
+                <span className="section-badge">Step 1</span>
+              </div>
+              <ApplicantForm 
+                data={formData} 
+                onChange={(newData) => setFormData(newData)} 
+              />
+            </div>
+            
+            <div className="panel-section">
+              <div className="section-header-inline">
+                <h2>Issue Details</h2>
+                <span className="section-badge">Step 2</span>
+              </div>
+              
+              <div className="issue-input-card">
+                <label className="input-label-large">
+                  <PenTool size={18} className="label-icon" />
+                  Describe your issue or request
+                  <span className="required-star">*</span>
+                </label>
+                <p className="input-hint">
+                  Include specific details: dates, names, locations, and expected outcome
+                </p>
+                <div className="ai-textarea-wrapper">
+                  <textarea
+                    className="form-textarea ai-input"
+                    rows="8"
+                    placeholder="Example: On 15th March 2024, I visited the Municipal Office to submit my property tax payment. The clerk demanded ₹500 extra for processing despite having an official receipt. I want to report this irregularity and request information about the official fee structure..."
+                    value={formData.issue_description}
+                    onChange={(e) => setFormData({ ...formData, issue_description: e.target.value })}
+                  />
+                  <div className="textarea-footer">
+                    <div className={`char-indicator ${formData.issue_description.length >= 20 ? 'valid' : ''}`}>
+                      {formData.issue_description.length >= 20 ? (
+                        <CheckCircle size={14} />
+                      ) : (
+                        <AlertCircle size={14} />
+                      )}
+                      <span>{formData.issue_description.length}/20 min chars</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="controls-grid">
+                <div className="control-card">
+                  <label className="control-label">
+                    <FileText size={16} />
+                    Document Type
+                  </label>
+                  <select 
+                    className="form-select-modern"
+                    value={formData.document_type}
+                    onChange={(e) => setFormData({ ...formData, document_type: e.target.value })}
+                  >
+                    <option value="information_request">RTI - Information Request</option>
+                    <option value="records_request">RTI - Records Access</option>
+                    <option value="inspection_request">RTI - Inspection Request</option>
+                    <option value="grievance">Complaint - Grievance</option>
+                  </select>
+                </div>
+
+                <div className="control-card">
+                  <label className="control-label">
+                    <Globe size={16} />
+                    Language
+                  </label>
+                  <select 
+                    className="form-select-modern"
+                    value={formData.language}
+                    onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+                  >
+                    <option value="english">English</option>
+                    <option value="hindi">Hindi</option>
+                  </select>
+                </div>
+
+                <div className="control-card">
+                  <label className="control-label">
+                    <MessageSquare size={16} />
+                    Writing Tone
+                  </label>
+                  <select 
+                    className="form-select-modern"
+                    value={formData.tone}
+                    onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
+                  >
+                    <option value="neutral">Neutral</option>
+                    <option value="formal">Formal</option>
+                    <option value="assertive">Assertive</option>
+                  </select>
+                </div>
+              </div>
+
+              <button 
+                className={`generate-btn ${loading ? 'loading' : ''}`} 
+                onClick={handleManualRegenerate}
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <RefreshCw className="spin" size={20} />
+                    <span>Generating Draft...</span>
+                  </>
+                ) : (
+                  <>
+                    <Zap size={20} />
+                    <span>Generate Draft</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Preview Panel */}
+          <div className="preview-panel">
+            <div className="preview-header">
+              <h2>
+                <FileText size={20} />
+                Live Preview
+              </h2>
+              {draft && <span className="preview-badge">Auto-updating</span>}
+            </div>
+
+            {error && (
+              <div className="error-card">
+                <AlertCircle size={20} />
+                <p>{error}</p>
+              </div>
+            )}
+            
+            {draft ? (
+              <div className="draft-content">
+                {draft.confidence && (
+                  <ConfidenceNotice 
                     level={draft.confidence.level} 
                     explanation={draft.confidence.explanation}
+                  />
+                )}
+                <DraftPreview 
+                  draftText={draft.draft_text} 
+                  onEdit={handleDraftEdit}
                 />
-              )}
-              <DraftPreview 
-                draftText={draft.draft_text} 
-                onEdit={handleDraftEdit}
-              />
-              <div className="mt-4">
-                <DownloadPanel draftData={{ ...formData, draft_text: draft.draft_text }} />
+                <div className="download-section">
+                  <DownloadPanel draftData={{ ...formData, draft_text: draft.draft_text }} />
+                </div>
               </div>
-            </>
-          ) : (
-            <div className="empty-state card text-center" style={{ padding: '4rem 2rem' }}>
-              <span style={{ fontSize: '3rem' }}>📄</span>
-              <h3>Your draft will appear here</h3>
-              <p className="text-muted">Start typing your issue details to see the magic happen.</p>
-            </div>
-          )}
+            ) : (
+              <div className="empty-state">
+                <div className="empty-icon">
+                  <FileText size={48} />
+                </div>
+                <h3>Your Draft Preview</h3>
+                <p>Fill in the required fields and your professionally formatted draft will appear here automatically.</p>
+                <div className="empty-checklist">
+                  <div className={`checklist-item ${formData.applicant_name?.length >= 2 ? 'done' : ''}`}>
+                    {formData.applicant_name?.length >= 2 ? <CheckCircle size={16} /> : <span className="bullet" />}
+                    Your name
+                  </div>
+                  <div className={`checklist-item ${formData.applicant_address?.length >= 10 ? 'done' : ''}`}>
+                    {formData.applicant_address?.length >= 10 ? <CheckCircle size={16} /> : <span className="bullet" />}
+                    Full address
+                  </div>
+                  <div className={`checklist-item ${formData.applicant_state?.length >= 2 ? 'done' : ''}`}>
+                    {formData.applicant_state?.length >= 2 ? <CheckCircle size={16} /> : <span className="bullet" />}
+                    State
+                  </div>
+                  <div className={`checklist-item ${formData.issue_description?.length >= 20 ? 'done' : ''}`}>
+                    {formData.issue_description?.length >= 20 ? <CheckCircle size={16} /> : <span className="bullet" />}
+                    Issue description (20+ chars)
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

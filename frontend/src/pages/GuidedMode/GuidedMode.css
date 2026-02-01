@@ -86,7 +86,7 @@
 .step-item.active .step-indicator {
     border-color: var(--color-primary);
     color: var(--color-primary);
-    box-shadow: 0 0 0 4px rgba(0, 80, 230, 0.15); /* Focus glow - Blue (01) */
+    box-shadow: var(--box-shadow-focus);
     background-color: white;
 }
 
@@ -136,16 +136,15 @@
     padding: 1.5rem;
     background-color: white;
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-lg); /* Rounded pop */
+    border-radius: var(--border-radius-md);
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: var(--box-shadow-card); /* Glassmorphism depth */
+    box-shadow: none;
 }
 
 .radio-card:hover {
     border-color: var(--color-primary);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-bg-subtle);
 }
 
 .radio-card input {

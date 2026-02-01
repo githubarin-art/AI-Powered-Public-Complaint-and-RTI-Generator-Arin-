@@ -267,7 +267,7 @@ export const getStorageInfo = () => {
   };
 };
 
-export default {
+const draftHistoryService = {
   getDraftHistory,
   saveDraft,
   getDraftById,
@@ -280,3 +280,5 @@ export default {
   exportAllData,
   getStorageInfo
 };
+
+export default draftHistoryService;

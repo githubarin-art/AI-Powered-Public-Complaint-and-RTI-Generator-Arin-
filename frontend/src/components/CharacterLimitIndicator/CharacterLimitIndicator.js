@@ -13,7 +13,7 @@ const CharacterLimitIndicator = ({
 }) => {
   const isHindi = language === 'hindi';
   
-  const { percentage, status, remaining, message } = useMemo(() => {
+  const { percentage, status, message } = useMemo(() => {
     const pct = (current / max) * 100;
     const rem = max - current;
     
@@ -60,7 +60,6 @@ const CharacterLimitIndicator = ({
     return {
       percentage: Math.min(pct, 100),
       status: stat,
-      remaining: rem,
       message: msg
     };
   }, [current, max, min, warningThreshold, dangerThreshold, isHindi]);

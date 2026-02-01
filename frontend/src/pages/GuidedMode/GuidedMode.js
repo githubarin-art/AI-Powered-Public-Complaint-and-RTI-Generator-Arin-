@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { Check } from 'lucide-react';
 import { generateDraft } from '../../services/draftService';
+import { getCategories } from '../../services/authorityService';
 import ApplicantForm from '../../components/ApplicantForm/ApplicantForm';
 import DraftPreview from '../../components/DraftPreview/DraftPreview';
 import DownloadPanel from '../../components/DownloadPanel/DownloadPanel';
@@ -11,6 +12,15 @@ const GuidedMode = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [draft, setDraft] = useState(null);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCats = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
+    fetchCats();
+  }, []);
   
   const [formData, setFormData] = useState({
     applicant_name: '',
@@ -22,6 +32,7 @@ const GuidedMode = () => {
     intent: '', // 'info' or 'complaint'
     issue_description: '',
     department_hint: '',
+    issue_category: '',
     time_period: '',
     // Output fields
     document_type: 'information_request',
@@ -72,7 +83,7 @@ const GuidedMode = () => {
       case 1:
         return (
           <div className="step-content">
-            <h2>Step 1: Who are you?</h2>
+            <h2>Step 1: Applicant Details</h2>
             <p className="text-muted mb-4">We need your details to address the application correctly.</p>
             <ApplicantForm data={formData} onChange={setFormData} />
           </div>
@@ -80,10 +91,10 @@ const GuidedMode = () => {
       case 2:
         return (
           <div className="step-content">
-            <h2>Step 2: What is the issue?</h2>
+            <h2>Step 2: Request Details</h2>
             <div className="card">
               <div className="input-group">
-                <label className="input-label">What do you want to do? *</label>
+                <label className="input-label">What document do you need? *</label>
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                     <label className="radio-card">
                         <input 
@@ -109,6 +120,43 @@ const GuidedMode = () => {
               </div>
 
               <div className="input-group">
+                <label className="input-label">Which department is involved? (Optional)</label>
+                <select 
+                  className="form-input"
+                  style={{ marginBottom: '0.5rem' }}
+                  value={formData.issue_category || (formData.department_hint ? 'other' : '')}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === 'other') {
+                        setFormData({...formData, issue_category: 'other', department_hint: ' '});
+                    } else if (!val) {
+                         setFormData({...formData, issue_category: '', department_hint: ''});
+                    } else {
+                        const cat = categories.find(c => c.id === val);
+                        setFormData({...formData, issue_category: val, department_hint: cat ? cat.name : val});
+                    }
+                  }}
+                >
+                    <option value="">-- Select Department --</option>
+                    {categories.map(cat => (
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                    <option value="other">Other / Not Listed</option>
+                </select>
+                
+                {(formData.issue_category === 'other' || (formData.department_hint && !categories.some(c => c.id === formData.issue_category))) ? (
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={formData.department_hint === ' ' ? '' : formData.department_hint}
+                      onChange={(e) => setFormData({...formData, department_hint: e.target.value, issue_category: 'other'})}
+                      placeholder="Type the department name here..."
+                      autoFocus
+                    />
+                ) : null}
+              </div>
+
+              <div className="input-group">
                 <label className="input-label">
                     {formData.intent === 'complaint' ? "Describe your grievance *" : "What information do you need? *"}
                 </label>
@@ -118,17 +166,6 @@ const GuidedMode = () => {
                   value={formData.issue_description}
                   onChange={(e) => setFormData({...formData, issue_description: e.target.value})}
                   placeholder="Be specific about dates, names, and places."
-                />
-              </div>
-
-               <div className="input-group">
-                <label className="input-label">Which department is involved? (Optional)</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={formData.department_hint}
-                  onChange={(e) => setFormData({...formData, department_hint: e.target.value})}
-                  placeholder="e.g. Municipal Corporation, Police, Electricity Board"
                 />
               </div>
             </div>

@@ -38,6 +38,11 @@ from .distilbert_semantic import (
     SemanticAnalysisResult,
 )
 
+from .translator import (
+    translate_to_hindi,
+    get_translator,
+)
+
 from .confidence_gate import (
     ConfidenceLevel,
     DecisionSource,
@@ -84,6 +89,10 @@ __all__ = [
     "get_cache_stats",
     "SimilarityResult",
     "SemanticAnalysisResult",
+
+    # Translation
+    "translate_to_hindi",
+    "get_translator",
     
     # Confidence gate
     "ConfidenceLevel",

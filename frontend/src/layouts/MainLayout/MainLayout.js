@@ -43,16 +43,16 @@ const MainLayout = ({ children }) => {
         <div className="container footer-content">
           <div className="footer-brand">
              <h3>CivicDraft</h3>
-             <p>AI-Powered Citizen Empowerment Tool</p>
+             <p>Civic Rights Management Platform</p>
           </div>
           <div className="footer-links">
              <p className="copyright">
-                &copy; {new Date().getFullYear()} CivicDraft. Secure & Open Source.
+                &copy; {new Date().getFullYear()} CivicDraft.
              </p>
           </div>
         </div>
         <div className="container footer-disclaimer">
-            <p><strong>Disclaimer:</strong> CivicDraft is an automated document generation tool and does not provide legal advice. We are not a law firm or a government agency. The generated documents are based on standard templates and user input. Users are responsible for verifying the accuracy and legality of the content before submission to any authority.</p>
+            <p><strong>Disclaimer:</strong> CivicDraft is a document automation platform and does not provide legal advice. We are not a law firm or a government agency. The generated documents are based on standard templates and user input. Users are responsible for verifying the accuracy and legality of the content before submission to any authority.</p>
         </div>
       </footer>
     </div>
