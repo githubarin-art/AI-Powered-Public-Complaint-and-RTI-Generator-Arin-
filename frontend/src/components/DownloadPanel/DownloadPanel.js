@@ -15,12 +15,8 @@ const DownloadPanel = ({ draftData }) => {
         downloadFile(draftData.draft_text, 'draft_application.txt');
         toast.success("Downloaded as Text File");
       } else {
-        const blob = await downloadDocument({
-            draft_text: draftData.draft_text,
-            applicant_name: draftData.applicant_name,
-            document_type: draftData.document_type || 'document',
-            format: format
-        }, format);
+        // Pass all draftData to the service, which handles transformation
+        const blob = await downloadDocument(draftData, format);
         
         const extension = format === 'excel' ? 'xlsx' : format;
         downloadBlob(blob, `application.${extension}`);

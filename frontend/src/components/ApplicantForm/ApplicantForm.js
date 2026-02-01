@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, MapPin, Phone, Mail, ChevronDown, ChevronUp } from 'lucide-react';
+import { User, Phone } from 'lucide-react';
 import './ApplicantForm.css';
 
 const ApplicantForm = ({ data, onChange }) => {

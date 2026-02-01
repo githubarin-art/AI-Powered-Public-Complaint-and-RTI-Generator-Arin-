@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Info, CheckCircle, AlertOctagon } from 'lucide-react';
+import { AlertTriangle, Info, AlertOctagon } from 'lucide-react';
 
 const ConfidenceNotice = ({ level, explanation }) => {
   if (level === 'high') return null;

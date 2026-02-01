@@ -84,11 +84,23 @@ class DraftAssembler:
         if email:
             contact_parts.append(f"Email: {email}")
         
+        # Format contact info, or provide placeholder if empty
         contact = "\n".join(contact_parts) if contact_parts else ""
+        
+        # Check if state is already in address to avoid duplication
+        address_lower = address.lower() if address else ""
+        state_lower = state.lower() if state else ""
+        
+        if state_lower and state_lower in address_lower:
+            # State already in address, don't duplicate
+            full_address = address
+        else:
+            # Append state to address
+            full_address = f"{address}, {state}" if state else address
         
         return {
             "APPLICANT_NAME": name,
-            "APPLICANT_ADDRESS": f"{address}, {state}",
+            "APPLICANT_ADDRESS": full_address,
             "APPLICANT_CONTACT": contact,
         }
     
@@ -204,6 +216,10 @@ class DraftAssembler:
             elif placeholder in self.DEFAULT_PLACEHOLDERS:
                 draft_text = draft_text.replace(f"{{{placeholder}}}", self.DEFAULT_PLACEHOLDERS[placeholder])
                 placeholders_missing.append(placeholder)
+            elif placeholder == "APPLICANT_CONTACT":
+                # Remove empty contact placeholder entirely
+                draft_text = draft_text.replace(f"{{{placeholder}}}\n", "")
+                draft_text = draft_text.replace(f"{{{placeholder}}}", "")
             else:
                 # Leave as is for user to fill
                 placeholders_missing.append(placeholder)

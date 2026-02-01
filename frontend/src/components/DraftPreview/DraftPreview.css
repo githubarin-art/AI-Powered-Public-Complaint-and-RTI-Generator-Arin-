@@ -11,7 +11,7 @@
   align-items: center;
   margin-bottom: 1rem;
   padding: 0.75rem 0;
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .preview-header h3 {
@@ -20,17 +20,17 @@
   gap: 0.5rem;
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--gray-800);
+  color: var(--color-text-heading);
   margin: 0;
 }
 
 .preview-text-container {
   flex: 1;
-  background-color: var(--gray-100);
+  background-color: var(--color-bg-subtle);
   padding: 2rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--border-radius-lg);
   overflow-y: auto;
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--color-border);
   /* Inner shadow to create depth behind the 'paper' */
   box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
 }
@@ -42,12 +42,13 @@
   margin: 0 auto;
   padding: 2.54cm !important; /* 1 inch margins */
   background: white !important;
-  color: #1f1f1f !important;
-  font-family: 'Courier Prime', 'Courier New', monospace !important;
-  font-size: 11pt !important;
-  line-height: 1.6 !important;
+  color: #000000 !important; /* Standard black for print */
+  font-family: 'Times New Roman', Times, serif !important; /* More formal legal font */
+  font-size: 12pt !important;
+  line-height: 1.5 !important;
   border: none !important;
-  border-radius: 2px !important;
+  border-radius: 0 !important;
+
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   resize: none;
   outline: none;

@@ -8,12 +8,16 @@ Following MODEL_USAGE_POLICY:
 - DistilBERT: ONLY for semantic similarity ranking, NOT generation
 - Confidence gating for all AI decisions
 - Full audit trail for all model operations
+
+NOTE: This module is designed to be run from the ml/ directory or imported
+when the backend/app directory is in the Python path. The imports use
+lazy loading to handle path resolution at runtime.
 """
 
 import os
 import sys
 import logging
-from typing import Dict, Any, Optional, List, Tuple
+from typing import Dict, Any, Optional, List, Tuple, TYPE_CHECKING
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -24,7 +28,77 @@ BACKEND_PATH = Path(__file__).parent.parent / "backend" / "app"
 if str(BACKEND_PATH) not in sys.path:
     sys.path.insert(0, str(BACKEND_PATH))
 
+# Type checking imports (for IDE support - these run only during static analysis)
+# At runtime, lazy imports are used instead
+if TYPE_CHECKING:
+    pass  # Imports moved to lazy loaders for runtime compatibility
+
 logger = logging.getLogger(__name__)
+
+
+def _import_spacy_engine():
+    """Lazy import for spacy_engine module"""
+    try:
+        from services.nlp import spacy_engine  # type: ignore
+        return spacy_engine
+    except ImportError:
+        try:
+            from app.services.nlp import spacy_engine  # type: ignore
+            return spacy_engine
+        except ImportError:
+            raise ImportError("Could not import spacy_engine. Ensure backend/app is in PYTHONPATH")
+
+
+def _import_distilbert():
+    """Lazy import for distilbert_semantic module"""
+    try:
+        from services.nlp import distilbert_semantic  # type: ignore
+        return distilbert_semantic
+    except ImportError:
+        try:
+            from app.services.nlp import distilbert_semantic  # type: ignore
+            return distilbert_semantic
+        except ImportError:
+            raise ImportError("Could not import distilbert_semantic. Ensure backend/app is in PYTHONPATH")
+
+
+def _import_intent_rules():
+    """Lazy import for intent_rules module"""
+    try:
+        from services.rule_engine import intent_rules  # type: ignore
+        return intent_rules
+    except ImportError:
+        try:
+            from app.services.rule_engine import intent_rules  # type: ignore
+            return intent_rules
+        except ImportError:
+            raise ImportError("Could not import intent_rules. Ensure backend/app is in PYTHONPATH")
+
+
+def _import_issue_rules():
+    """Lazy import for issue_rules module"""
+    try:
+        from services.rule_engine import issue_rules  # type: ignore
+        return issue_rules
+    except ImportError:
+        try:
+            from app.services.rule_engine import issue_rules  # type: ignore
+            return issue_rules
+        except ImportError:
+            raise ImportError("Could not import issue_rules. Ensure backend/app is in PYTHONPATH")
+
+
+def _import_legal_triggers():
+    """Lazy import for legal_triggers module"""
+    try:
+        from services.rule_engine import legal_triggers  # type: ignore
+        return legal_triggers
+    except ImportError:
+        try:
+            from app.services.rule_engine import legal_triggers  # type: ignore
+            return legal_triggers
+        except ImportError:
+            raise ImportError("Could not import legal_triggers. Ensure backend/app is in PYTHONPATH")
 
 
 class ModelType(Enum):
@@ -159,10 +233,10 @@ class ModelManager:
         model_info.status = ModelStatus.LOADING
         
         try:
-            from services.nlp.spacy_engine import get_nlp, preload_models
+            spacy_engine = _import_spacy_engine()
             
             # Load the model
-            nlp = get_nlp()
+            nlp = spacy_engine.get_nlp()
             
             # Update model info
             model_info.status = ModelStatus.LOADED
@@ -192,10 +266,10 @@ class ModelManager:
         model_info.status = ModelStatus.LOADING
         
         try:
-            from services.nlp.distilbert_semantic import get_model, preload_model
+            distilbert = _import_distilbert()
             
             # Load the model
-            preload_model()
+            distilbert.preload_model()
             
             # Update model info
             model_info.status = ModelStatus.LOADED
@@ -243,9 +317,9 @@ class ModelManager:
         
         # Step 1: Rule Engine (PRIMARY)
         try:
-            from services.rule_engine.intent_rules import classify_intent_detailed
+            intent_rules = _import_intent_rules()
             
-            rule_result = classify_intent_detailed(text)
+            rule_result = intent_rules.classify_intent_detailed(text)
             audit_trail.append({
                 "step": "rule_engine",
                 "intent": rule_result.intent.value,
@@ -269,9 +343,9 @@ class ModelManager:
             
             # Step 2: spaCy NLP for entity enhancement
             if self.is_model_ready(ModelType.SPACY) or self.load_spacy()["status"] == "loaded":
-                from services.nlp.spacy_engine import full_analysis
+                spacy_engine = _import_spacy_engine()
                 
-                nlp_result = full_analysis(text)
+                nlp_result = spacy_engine.full_analysis(text)
                 audit_trail.append({
                     "step": "spacy_nlp",
                     "entities_found": len(nlp_result.entities),
@@ -297,9 +371,9 @@ class ModelManager:
             
             # Step 3: DistilBERT for semantic similarity (last resort)
             if self.is_model_ready(ModelType.DISTILBERT) or self.load_distilbert()["status"] == "loaded":
-                from services.nlp.distilbert_semantic import classify_query_type
+                distilbert = _import_distilbert()
                 
-                semantic_scores = classify_query_type(text)
+                semantic_scores = distilbert.classify_query_type(text)
                 audit_trail.append({
                     "step": "distilbert_semantic",
                     "top_scores": dict(list(semantic_scores.items())[:3])
@@ -354,9 +428,9 @@ class ModelManager:
             if not self.is_model_ready(ModelType.SPACY):
                 self.load_spacy()
             
-            from services.nlp.spacy_engine import extract_entities_detailed
+            spacy_engine = _import_spacy_engine()
             
-            entities = extract_entities_detailed(text)
+            entities = spacy_engine.extract_entities_detailed(text)
             
             return InferenceResult(
                 model_used=ModelType.SPACY,
@@ -389,9 +463,9 @@ class ModelManager:
             if not self.is_model_ready(ModelType.DISTILBERT):
                 self.load_distilbert()
             
-            from services.nlp.distilbert_semantic import rank_by_similarity_detailed
+            distilbert = _import_distilbert()
             
-            result = rank_by_similarity_detailed(query, candidates, top_k=5)
+            result = distilbert.rank_by_similarity_detailed(query, candidates, top_k=5)
             
             return InferenceResult(
                 model_used=ModelType.DISTILBERT,
@@ -419,9 +493,9 @@ class ModelManager:
         
         try:
             # Step 1: Rule Engine
-            from services.rule_engine.issue_rules import map_issue_detailed
+            issue_rules = _import_issue_rules()
             
-            matches = map_issue_detailed(text)
+            matches = issue_rules.map_issue_detailed(text)
             audit_trail.append({
                 "step": "rule_engine",
                 "matches_found": len(matches),
@@ -444,15 +518,15 @@ class ModelManager:
             
             # Step 2: Semantic matching for ambiguous cases
             if self.is_model_ready(ModelType.DISTILBERT) or self.load_distilbert()["status"] == "loaded":
-                from services.nlp.distilbert_semantic import classify_query_type
-                from services.rule_engine.issue_rules import get_all_categories
+                distilbert = _import_distilbert()
+                issue_rules = _import_issue_rules()
                 
                 # Get category descriptions
-                categories = get_all_categories()
+                categories = issue_rules.get_all_categories()
                 category_texts = [f"{c['value']} department handling {c['label']} issues" 
                                  for c in categories]
                 
-                semantic_result = classify_query_type(text)
+                semantic_result = distilbert.classify_query_type(text)
                 audit_trail.append({
                     "step": "semantic_matching",
                     "top_scores": dict(list(semantic_result.items())[:3])
@@ -488,9 +562,9 @@ class ModelManager:
         start_time = time.time()
         
         try:
-            from services.rule_engine.legal_triggers import analyze_legal_context
+            legal_triggers = _import_legal_triggers()
             
-            result = analyze_legal_context(text)
+            result = legal_triggers.analyze_legal_context(text)
             
             return InferenceResult(
                 model_used=ModelType.RULE_ENGINE,
@@ -549,7 +623,7 @@ class ModelManager:
             }
             
             if info.status == ModelStatus.ERROR:
-                model_health["error"] = info.error_message
+                model_health["error"] = info.error_message or "Unknown error"
                 health["status"] = "degraded"
             
             health["models"][model_type.value] = model_health
@@ -562,8 +636,8 @@ class ModelManager:
         
         # Clear caches
         try:
-            from services.nlp.distilbert_semantic import clear_cache
-            clear_cache()
+            distilbert = _import_distilbert()
+            distilbert.clear_cache()
         except:
             pass
         

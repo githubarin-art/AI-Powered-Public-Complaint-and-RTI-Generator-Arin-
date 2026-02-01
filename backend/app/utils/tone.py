@@ -7,6 +7,30 @@ from typing import Dict, List
 import re
 
 
+# Common casual abbreviations to fix (applied to all tones)
+CASUAL_FIXES = {
+    "plz": "please",
+    "pls": "please",
+    "thx": "thanks",
+    "thnks": "thanks",
+    "u": "you",
+    "r": "are",
+    "ur": "your",
+    "bcoz": "because",
+    "cuz": "because",
+    "coz": "because",
+    "fav": "favorable",
+    "info": "information",
+    "abt": "about",
+    "msg": "message",
+    "min": "minimum",
+    "max": "maximum",
+    "approx": "approximately",
+    "yr": "year",
+    "yrs": "years",
+    "no.": "number",
+}
+
 # Tone-specific word replacements
 TONE_REPLACEMENTS = {
     "formal": {
@@ -58,16 +82,25 @@ def adjust_tone(text: str, target_tone: str) -> str:
     
     target_tone: 'neutral', 'formal', 'assertive'
     """
-    if target_tone not in ["neutral", "formal", "assertive"]:
+    if not text:
         return text
-    
+
     result = text
     
-    # Apply word replacements
+    # 1. Expand common abbreviations (Always done first)
+    for abbr, full in CASUAL_FIXES.items():
+        # Match standalone words only (e.g. don't replace 'u' in 'house')
+        pattern = re.compile(r'\b' + re.escape(abbr) + r'\b', re.IGNORECASE)
+        result = pattern.sub(lambda m: full if m.group().islower() else full.capitalize(), result)
+
+    if target_tone not in ["neutral", "formal", "assertive"]:
+        return result
+    
+    # 2. Apply tone-specific replacements
     if target_tone in TONE_REPLACEMENTS:
         for old, new in TONE_REPLACEMENTS[target_tone].items():
             # Case-insensitive replacement, preserving case
-            pattern = re.compile(re.escape(old), re.IGNORECASE)
+            pattern = re.compile(r'\b' + re.escape(old) + r'\b', re.IGNORECASE)
             result = pattern.sub(lambda m: new if m.group().islower() else new.capitalize(), result)
     
     return result

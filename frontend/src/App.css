@@ -26,12 +26,12 @@
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
+  background-color: var(--color-accent);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--color-accent-hover);
   text-decoration: none;
 }
 
@@ -42,12 +42,12 @@
 }
 
 .btn-secondary:hover {
-  background-color: rgba(15, 98, 254, 0.1);
+  background-color: rgba(12, 30, 53, 0.05); /* Navy tint */
   text-decoration: none;
 }
 
 .btn-success {
-  background-color: var(--color-secondary);
+  background-color: var(--color-success);
   color: white;
 }
 

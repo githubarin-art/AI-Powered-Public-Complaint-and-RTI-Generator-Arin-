@@ -1,9 +1,9 @@
 .download-panel-card {
   background: white;
-  border-radius: var(--radius-lg);
+  border-radius: var(--border-radius-lg);
   padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--gray-200);
+  /* Removed shadow for dashboard look */
+  border: 1px solid var(--color-border);
 }
 
 .download-panel-card .panel-header {
@@ -18,12 +18,12 @@
   gap: 0.5rem;
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--color-text-heading);
   margin: 0 0 0.25rem 0;
 }
 
 .download-panel-card .panel-header p {
-  color: var(--gray-500);
+  color: var(--color-text-light);
   font-size: 0.875rem;
   margin: 0;
 }
@@ -41,8 +41,8 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 1.25rem 1rem;
-  border: 2px solid var(--gray-100);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
   background: white;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -50,8 +50,9 @@
 }
 
 .download-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  /* No Lift - Industrial Feel */
+  border-color: var(--color-text-heading);
+  background-color: var(--color-bg-subtle);
 }
 
 .download-btn:disabled {
@@ -65,45 +66,48 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-md);
+  border-radius: var(--border-radius-md);
   font-weight: 700;
   font-size: 0.875rem;
+  /* Default gray style */
+  background: var(--color-bg-subtle);
+  color: var(--color-text-body);
 }
 
 .download-btn span {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--gray-700);
+  color: var(--color-text-body);
 }
 
 /* PDF Button Style */
 .pdf-btn .btn-icon {
-  background: #fee2e2;
-  color: #ef4444;
+  background: #FFF1F0; /* Very light red */
+  color: #E02F2F;      /* Strong Red */
 }
-.pdf-btn:hover:not(:disabled) {
-  border-color: #fee2e2;
-  background: #fef2f2;
+.pdf-btn:hover:not(:disabled) .btn-icon {
+  background: #E02F2F;
+  color: white;
 }
 
 /* DOCX Button Style */
 .docx-btn .btn-icon {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #F0F5FF; /* Very light blue */
+  color: #0050E6;      /* Brand Blue */
 }
-.docx-btn:hover:not(:disabled) {
-  border-color: #dbeafe;
-  background: #eff6ff;
+.docx-btn:hover:not(:disabled) .btn-icon {
+  background: #0050E6;
+  color: white;
 }
 
 /* TXT Button Style */
 .txt-btn .btn-icon {
-  background: #f3f4f6;
-  color: #4b5563;
+  background: #F4F5F7;
+  color: #505F79;
 }
-.txt-btn:hover:not(:disabled) {
-  border-color: #e5e7eb;
-  background: #f9fafb;
+.txt-btn:hover:not(:disabled) .btn-icon {
+  background: #172B4D;
+  color: white;
 }
 
 @media (max-width: 640px) {

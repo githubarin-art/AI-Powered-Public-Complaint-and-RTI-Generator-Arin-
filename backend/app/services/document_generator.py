@@ -23,10 +23,12 @@ from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
 from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.styles.style import _CharacterStyle
 
 # XLSX Generation
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side
+from openpyxl.worksheet.worksheet import Worksheet
 
 from app.config import get_settings
 
@@ -76,10 +78,10 @@ class DocumentGenerator:
         doc = SimpleDocTemplate(
             buffer,
             pagesize=A4,
-            rightMargin=0.75 * inch,
-            leftMargin=0.75 * inch,
-            topMargin=0.75 * inch,
-            bottomMargin=0.75 * inch
+            rightMargin=1.0 * inch,
+            leftMargin=1.0 * inch,
+            topMargin=1.0 * inch,
+            bottomMargin=1.0 * inch
         )
         
         # Styles
@@ -92,24 +94,24 @@ class DocumentGenerator:
             fontSize=14,
             spaceAfter=20,
             alignment=TA_CENTER,
-            fontName='Helvetica-Bold'
+            fontName='Times-Bold'
         )
         
         body_style = ParagraphStyle(
             'CustomBody',
             parent=styles['Normal'],
-            fontSize=11,
-            leading=16,
+            fontSize=12,
+            leading=18,  # 1.5 line spacing
             alignment=TA_JUSTIFY,
-            fontName='Helvetica',
+            fontName='Times-Roman',
             spaceAfter=12
         )
         
         subject_style = ParagraphStyle(
             'Subject',
             parent=styles['Normal'],
-            fontSize=11,
-            fontName='Helvetica-Bold',
+            fontSize=12,
+            fontName='Times-Bold',
             spaceAfter=12,
             spaceBefore=12
         )
@@ -193,8 +195,9 @@ class DocumentGenerator:
         
         # Set default font
         style = doc.styles['Normal']
-        style.font.name = 'Times New Roman'
-        style.font.size = Pt(12)
+        if hasattr(style, 'font'):
+            style.font.name = 'Times New Roman'  # type: ignore[union-attr]
+            style.font.size = Pt(12)  # type: ignore[union-attr]
         
         # Process draft text
         lines = draft_text.strip().split('\n')
@@ -284,7 +287,7 @@ class DocumentGenerator:
         logger.info(f"Generating XLSX tracking sheet for {document_type}")
         
         wb = Workbook()
-        ws = wb.active
+        ws: Worksheet = wb.active  # type: ignore[assignment]
         ws.title = "Application Tracker"
         
         # Styles

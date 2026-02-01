@@ -20,13 +20,13 @@ const MainLayout = ({ children }) => {
           </Link>
           <nav className="main-nav">
             <Link to="/" className={`nav-link ${isActive('/')}`}>
-               <Home size={18} /> Home
+               Home
             </Link>
             <Link to="/guided" className={`nav-link ${isActive('/guided')}`}>
-               <ClipboardList size={18} /> Guided Mode
+               Guided Mode
             </Link>
             <Link to="/assisted" className={`nav-link ${isActive('/assisted')}`}>
-               <Zap size={18} /> Assisted Mode
+               Assisted Mode
             </Link>
           </nav>
         </div>
@@ -44,12 +44,12 @@ const MainLayout = ({ children }) => {
           </div>
           <div className="footer-links">
              <p className="copyright">
-                &copy; {new Date().getFullYear()} Open Source Project. 
-             </p>
-             <p className="made-with">
-                Made with <Heart size={14} fill="currentColor" /> for India
+                &copy; {new Date().getFullYear()} CivicDraft. Secure & Open Source.
              </p>
           </div>
+        </div>
+        <div className="container footer-disclaimer">
+            <p><strong>Disclaimer:</strong> CivicDraft is an automated document generation tool and does not provide legal advice. We are not a law firm or a government agency. The generated documents are based on standard templates and user input. Users are responsible for verifying the accuracy and legality of the content before submission to any authority.</p>
         </div>
       </footer>
     </div>

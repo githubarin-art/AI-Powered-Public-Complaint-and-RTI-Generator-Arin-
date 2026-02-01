@@ -86,7 +86,7 @@
 .step-item.active .step-indicator {
     border-color: var(--color-primary);
     color: var(--color-primary);
-    box-shadow: 0 0 0 4px rgba(15, 98, 254, 0.15); /* Focus glow */
+    box-shadow: 0 0 0 4px rgba(0, 80, 230, 0.15); /* Focus glow - Blue (01) */
     background-color: white;
 }
 
