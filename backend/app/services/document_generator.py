@@ -23,10 +23,12 @@ from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
 from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.styles.style import _CharacterStyle
 
 # XLSX Generation
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side
+from openpyxl.worksheet.worksheet import Worksheet
 
 from app.config import get_settings
 
@@ -193,8 +195,9 @@ class DocumentGenerator:
         
         # Set default font
         style = doc.styles['Normal']
-        style.font.name = 'Times New Roman'
-        style.font.size = Pt(12)
+        if hasattr(style, 'font'):
+            style.font.name = 'Times New Roman'  # type: ignore[union-attr]
+            style.font.size = Pt(12)  # type: ignore[union-attr]
         
         # Process draft text
         lines = draft_text.strip().split('\n')
@@ -284,7 +287,7 @@ class DocumentGenerator:
         logger.info(f"Generating XLSX tracking sheet for {document_type}")
         
         wb = Workbook()
-        ws = wb.active
+        ws: Worksheet = wb.active  # type: ignore[assignment]
         ws.title = "Application Tracker"
         
         # Styles

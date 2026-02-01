@@ -112,7 +112,7 @@ def _determine_document_type(text: str, intent: IntentType) -> Tuple[DocumentTyp
     
     # Find best match
     if max(scores.values()) > 0:
-        best_type = max(scores, key=scores.get)
+        best_type = max(scores, key=lambda x: scores.get(x, 0))
         confidence = min(0.95, 0.6 + (scores[best_type] * 0.1))
         return best_type, confidence
     
@@ -296,7 +296,7 @@ def run_inference(text: str, language: str = "english") -> InferenceResult:
     gated = gate_result(
         value=intent,
         confidence=adjusted_confidence,
-        alternatives=[IntentType.RTI, IntentType.COMPLAINT, IntentType.APPEAL] if intent == IntentType.UNKNOWN else [],
+        alternatives=[{"type": t.value, "confidence": 0.0} for t in [IntentType.RTI, IntentType.COMPLAINT, IntentType.APPEAL]] if intent == IntentType.UNKNOWN else [],
         context=text[:100]
     )
     
