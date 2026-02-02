@@ -1,14 +1,22 @@
-
 """
 Translator Service
 Handles translation between supported languages using Hugging Face Transformers.
 Specifically designed for English <-> Hindi translation.
+
+Note: Requires transformers package. Falls back to original text if unavailable.
 """
 
-from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
 from loguru import logger
 import functools
 import os
+
+# Try to import transformers, but don't fail if it's not available
+try:
+    from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
+    TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    TRANSFORMERS_AVAILABLE = False
+    logger.warning("transformers package not available. Translation features disabled.")
 
 # Global cache for pipeline
 _translator_pipeline = None
@@ -18,8 +26,12 @@ def get_translator():
     """
     Get or load the translation pipeline.
     Uses Singleton pattern to avoid reloading model.
+    Returns None if transformers not available.
     """
     global _translator_pipeline
+    
+    if not TRANSFORMERS_AVAILABLE:
+        return None
     
     if _translator_pipeline is not None:
         return _translator_pipeline
