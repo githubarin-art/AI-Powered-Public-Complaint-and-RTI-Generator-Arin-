@@ -33,26 +33,40 @@ class Settings(BaseSettings):
     # ===================
     # CORS Configuration
     # ===================
-    CORS_ORIGINS: List[str] = Field(
-        default=["http://localhost:3000", "http://127.0.0.1:3000", "https://*.vercel.app"],
-        description="Allowed CORS origins - set via CORS_ORIGINS env var for production"
+    CORS_ORIGINS: Union[str, List[str]] = Field(
+        default='["http://localhost:3000","http://127.0.0.1:3000","https://*.vercel.app"]',
+        description="Allowed CORS origins - JSON array or comma-separated string"
     )
     CORS_ALLOW_CREDENTIALS: bool = True
     CORS_ALLOW_METHODS: List[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     CORS_ALLOW_HEADERS: List[str] = ["*"]
     
-    @field_validator("CORS_ORIGINS", mode="before")
+    @field_validator("CORS_ORIGINS", mode="after")
     @classmethod
     def parse_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
-        """Parse CORS_ORIGINS from JSON string or return list as-is"""
+        """Parse CORS_ORIGINS from JSON string or comma-separated values"""
+        if isinstance(v, list):
+            return v
         if isinstance(v, str):
-            try:
-                # Try parsing as JSON array
-                return json.loads(v)
-            except json.JSONDecodeError:
-                # Fall back to comma-separated values
+            # Remove whitespace
+            v = v.strip()
+            if not v:
+                return ["http://localhost:3000"]
+            # Try parsing as JSON array (handles both proper JSON and escaped quotes)
+            if v.startswith('[') or v.startswith('[\\"'):
+                try:
+                    # Handle escaped quotes from environment variables
+                    cleaned = v.replace('\\"', '"')
+                    parsed = json.loads(cleaned)
+                    return parsed if isinstance(parsed, list) else [str(parsed)]
+                except json.JSONDecodeError:
+                    pass
+            # Fall back to comma-separated values (only if no brackets)
+            if '[' not in v:
                 return [origin.strip() for origin in v.split(",") if origin.strip()]
-        return v
+            # Last resort: return as single item
+            return [v]
+        return ["http://localhost:3000"]
     
     # ===================
     # NLP Configuration
@@ -98,18 +112,26 @@ class Settings(BaseSettings):
     # ===================
     API_KEY_ENABLED: bool = Field(default=False, description="Require API key for requests")
     API_KEY_HEADER: str = Field(default="X-API-Key", description="API key header name")
-    API_KEYS: List[str] = Field(default=[], description="Valid API keys")
+    API_KEYS: Union[str, List[str]] = Field(default="[]", description="Valid API keys - JSON array or comma-separated")
     
-    @field_validator("API_KEYS", mode="before")
+    @field_validator("API_KEYS", mode="after")
     @classmethod
     def parse_api_keys(cls, v: Union[str, List[str]]) -> List[str]:
-        """Parse API_KEYS from JSON string or return list as-is"""
+        """Parse API_KEYS from JSON string or comma-separated values"""
+        if isinstance(v, list):
+            return v
         if isinstance(v, str):
-            try:
-                return json.loads(v)
-            except json.JSONDecodeError:
-                return [key.strip() for key in v.split(",") if key.strip()]
-        return v
+            v = v.strip()
+            if not v or v == "[]":
+                return []
+            if v.startswith('['):
+                try:
+                    parsed = json.loads(v)
+                    return parsed if isinstance(parsed, list) else [str(parsed)]
+                except json.JSONDecodeError:
+                    pass
+            return [key.strip() for key in v.split(",") if key.strip()]
+        return []
     
     # ===================
     # OpenAI Configuration (LLM Assistant - NOT Authority)
