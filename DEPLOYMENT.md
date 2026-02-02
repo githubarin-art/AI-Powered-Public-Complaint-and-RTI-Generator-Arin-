@@ -88,12 +88,17 @@ Click **Create Web Service**. Render will:
 
 After deployment, your API will be available at:
 ```
-https://rti-complaint-generator-api.onrender.com
+https://your-service-name.onrender.com
+```
+
+**Live Example:**
+```
+https://ai-powered-public-complaint-and-rti-bbv6.onrender.com
 ```
 
 Test it:
 ```bash
-curl https://rti-complaint-generator-api.onrender.com/health
+curl https://your-service-name.onrender.com/health
 ```
 
 ---
@@ -125,9 +130,16 @@ In Vercel Dashboard → Your Project → **Settings** → **Environment Variable
 
 | Key | Value |
 |-----|-------|
-| `REACT_APP_API_URL` | `https://rti-complaint-generator-api.onrender.com/api` |
+| `REACT_APP_API_URL` | `https://your-service-name.onrender.com/api` |
+| `REACT_APP_NAME` | `RTI & Complaint Generator` |
+| `REACT_APP_VERSION` | `1.0.0` |
 
-**Important:** Replace with your actual Render URL!
+**Important:** Replace `your-service-name.onrender.com` with your actual Render backend URL!
+
+**Live Example:**
+```
+REACT_APP_API_URL=https://ai-powered-public-complaint-and-rti-bbv6.onrender.com/api
+```
 
 ### Step 4: Deploy
 
@@ -142,6 +154,13 @@ After deployment, your app will be available at:
 ```
 https://your-project-name.vercel.app
 ```
+
+**Live Example:**
+```
+https://rti-complaint-generator.vercel.app
+```
+
+**Note:** Vercel automatically assigns a production URL and creates deployment-specific preview URLs.
 
 ---
 

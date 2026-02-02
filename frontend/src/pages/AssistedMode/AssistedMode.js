@@ -3,7 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { 
   FileText, Globe, RefreshCw, 
-  ArrowLeft, Zap, CheckCircle, AlertCircle, PenTool, Sparkles, HelpCircle, Scale, Shield, Layers
+  ArrowLeft, Zap, CheckCircle, AlertCircle, PenTool, Sparkles, HelpCircle, Scale, Layers
 } from 'lucide-react';
 import useDebounce from '../../hooks/useDebounce';
 import { generateDraft } from '../../services/draftService';
