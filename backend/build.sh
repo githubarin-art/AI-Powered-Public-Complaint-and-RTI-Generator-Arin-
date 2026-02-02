@@ -7,8 +7,8 @@ set -o errexit
 # Upgrade pip
 pip install --upgrade pip
 
-# Install Python dependencies
-pip install -r requirements.txt
+# Install Python dependencies (with no cache to avoid stale builds)
+pip install --no-cache-dir -r requirements.txt
 
 # Download spaCy model
 python -m spacy download en_core_web_sm

@@ -59,9 +59,14 @@ In Render Dashboard → Your Service → **Environment**:
 | `LOG_LEVEL` | `INFO` |
 | `CORS_ORIGINS` | `["https://your-app.vercel.app","http://localhost:3000"]` |
 | `SPACY_MODEL` | `en_core_web_sm` |
-| `ENABLE_DISTILBERT` | `true` |
+| `ENABLE_DISTILBERT` | `false` (use `true` on Starter plan with 1GB RAM) |
 | `RATE_LIMIT_ENABLED` | `true` |
 | `OPENAI_API_KEY` | `sk-your-key` (Optional) |
+
+**Memory optimization:**
+- DistilBERT disabled by default to fit in 512MB free tier
+- App uses rule-based engine + spaCy (works great without DistilBERT!)
+- To enable DistilBERT: Set `ENABLE_DISTILBERT=true` and upgrade to Starter plan
 
 **Note:** `CORS_ORIGINS` accepts:
 - JSON array: `["https://app.vercel.app","http://localhost:3000"]`
